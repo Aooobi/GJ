@@ -4,7 +4,6 @@ using UnityEngine;
 
 public class Mybutton : MonoBehaviour
 {
-<<<<<<< HEAD
     public float speed = 0.5f;
     public float speed2 = 0.5f;
     // Start is called before the first frame update
