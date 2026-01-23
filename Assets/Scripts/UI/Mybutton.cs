@@ -6,15 +6,26 @@ public class Mybutton : MonoBehaviour
 {
     public float speed = 1f;
 
+
     // Start is called before the first frame update
     void Start()
     {
         
+
     }
 
     // Update is called once per frame
     void Update()
     {
         
+    }
+
+    public void OnClick()
+    {
+        transform.Translate(Vector3.up * speed);
+    }
+    public void OnClickDown()
+    {
+        transform.Translate(Vector3.down * speed);
     }
 }
