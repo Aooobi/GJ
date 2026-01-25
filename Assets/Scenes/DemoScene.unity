@@ -14069,6 +14069,7 @@ GameObject:
   - component: {fileID: 1310700899}
   - component: {fileID: 1310700903}
   - component: {fileID: 1310700902}
+  - component: {fileID: 1310700904}
   m_Layer: 0
   m_Name: "Capsule\uFF08\u6D4B\u8BD5\u4E3B\u89D2\uFF09"
   m_TagString: Untagged
@@ -14219,6 +14220,32 @@ Rigidbody2D:
   m_SleepingMode: 1
   m_CollisionDetection: 0
   m_Constraints: 0
+--- !u!114 &1310700904
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1310700898}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b21d302bc7887e147aacf9d875f42c13, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  maxHealth: 0
+  currentHealth: 0
+  maxSparks: 0
+  currentSparks: 0
+  baseMoveSpeed: 5
+  moveSpeed: 0
+  attackSpeed: 0
+  baseJumpHeight: 10
+  jumpHeight: 0
+  baseLightAttack: 0
+  baseHeavyAttack: 0
+  lightAttack: 0
+  HeavyAttack: 0
+  Defense: 0
 --- !u!1 &1910202886
 GameObject:
   m_ObjectHideFlags: 0
