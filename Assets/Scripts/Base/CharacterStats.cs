@@ -19,11 +19,12 @@ public class CharacterStats : MonoBehaviour
     public float currentSparks;
 
     //移动参数
-    public float baseMoveSpeed;
+    [HideInInspector]public float baseMoveSpeed=5f;
     public float moveSpeed;//当前
 
-    public float attackSpeed;
-    public float jumpHeight;
+    [HideInInspector]public float attackSpeed;
+    [HideInInspector]public float baseJumpHeight=10f;
+    public float jumpHeight;//当前
 
     //攻击力
     public float baseLightAttack;
@@ -65,6 +66,10 @@ public class CharacterStats : MonoBehaviour
 
         moveSpeed = baseMoveSpeed;
         MovegrowTime = 0f;
+
+        jumpHeight = baseJumpHeight;
+
+        
     }
 
     //增幅道具
