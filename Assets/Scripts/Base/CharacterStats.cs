@@ -68,9 +68,6 @@ public class CharacterStats : MonoBehaviour
     }
 
     //增幅道具
-
-
-
     //攻击力在一定时间内增加
     private void Update()
     {
