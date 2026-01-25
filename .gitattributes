@@ -1,2 +1,202 @@
-# Auto detect text files and perform LF normalization
+# Unity项目行尾符规范化配置
+# 此文件应放在仓库根目录，与.gitignore同级
+
+# 自动检测文本文件，并在提交时转换为LF
 * text=auto
+
+# ====== 明确的文本文件类型（使用LF行尾符） ======
+
+# C# 脚本
+*.cs text eol=lf diff=csharp
+
+# Unity配置文件
+*.asset text eol=lf
+*.unity text eol=lf
+*.prefab text eol=lf
+*.mat text eol=lf
+*.controller text eol=lf
+*.anim text eol=lf
+*.overrideController text eol=lf
+*.mask text eol=lf
+*.physicMaterial text eol=lf
+*.physicsMaterial2D text eol=lf
+*.flare text eol=lf
+*.shadervariants text eol=lf
+
+# 着色器文件
+*.shader text eol=lf
+*.cginc text eol=lf
+*.hlsl text eol=lf
+*.glslinc text eol=lf
+*.compute text eol=lf
+
+# 配置文件
+*.json text eol=lf
+*.yml text eol=lf
+*.yaml text eol=lf
+*.xml text eol=lf
+*.txt text eol=lf
+*.md text eol=lf
+*.rst text eol=lf
+*.cfg text eol=lf
+*.conf text eol=lf
+*.ini text eol=lf
+*.toml text eol=lf
+
+# Web相关
+*.html text eol=lf
+*.htm text eol=lf
+*.css text eol=lf
+*.js text eol=lf
+*.ts text eol=lf
+*.jsx text eol=lf
+*.tsx text eol=lf
+*.vue text eol=lf
+
+# 脚本语言
+*.py text eol=lf
+*.lua text eol=lf
+*.php text eol=lf
+*.rb text eol=lf
+*.pl text eol=lf
+*.sh text eol=lf
+*.bat text eol=lf
+*.cmd text eol=lf
+*.ps1 text eol=lf
+
+# Git相关
+.gitignore text eol=lf
+.gitattributes text eol=lf
+.gitmodules text eol=lf
+.gitkeep text eol=lf
+
+# 其他文本文件
+*.csv text eol=lf
+*.tsv text eol=lf
+*.sql text eol=lf
+*.rtf text eol=lf
+
+# Unity元文件
+*.meta text eol=lf
+
+# ====== 明确的二进制文件（禁止Git转换） ======
+
+# 图像文件
+*.png binary
+*.jpg binary
+*.jpeg binary
+*.gif binary
+*.bmp binary
+*.tiff binary
+*.tif binary
+*.psd binary
+*.ai binary
+*.svg binary
+*.ico binary
+*.icns binary
+*.exr binary
+*.hdr binary
+
+# 3D模型和资源
+*.fbx binary
+*.obj binary
+*.blend binary
+*.ma binary
+*.mb binary
+*.max binary
+*.c4d binary
+*.3ds binary
+*.stl binary
+*.dae binary
+
+# 音频文件
+*.wav binary
+*.mp3 binary
+*.ogg binary
+*.aiff binary
+*.flac binary
+*.m4a binary
+*.aac binary
+
+# 视频文件
+*.mp4 binary
+*.mov binary
+*.avi binary
+*.webm binary
+*.mkv binary
+*.flv binary
+
+# 字体文件
+*.ttf binary
+*.otf binary
+*.fon binary
+*.fnt binary
+*.woff binary
+*.woff2 binary
+*.eot binary
+
+# 压缩包和安装包
+*.zip binary
+*.rar binary
+*.7z binary
+*.tar binary
+*.gz binary
+*.bz2 binary
+*.xz binary
+*.unitypackage binary
+
+# 可执行文件
+*.exe binary
+*.dll binary
+*.so binary
+*.dylib binary
+*.bundle binary
+*.app binary
+*.apk binary
+*.aab binary
+*.ipa binary
+*.msi binary
+*.pkg binary
+*.deb binary
+*.rpm binary
+
+# Office文档
+*.pdf binary
+*.doc binary
+*.docx binary
+*.xls binary
+*.xlsx binary
+*.ppt binary
+*.pptx binary
+
+# 其他二进制
+*.db binary
+*.sqlite binary
+*.sqlite3 binary
+*.dat binary
+*.data binary
+*.bin binary
+*.idx binary
+*.pack binary
+
+# ====== 特殊处理 ======
+
+# 这些文件可能会被误判为文本文件，明确标记为二进制
+*.gradle binary
+*.jar binary
+*.class binary
+
+# Git LFS 文件（如果使用Git LFS）
+# *.psd filter=lfs diff=lfs merge=lfs -text
+# *.fbx filter=lfs diff=lfs merge=lfs -text
+# *.mp4 filter=lfs diff=lfs merge=lfs -text
+
+# ====== 特定文件处理 ======
+
+# 强制处理行尾符的文件（即使内容看起来像二进制）
+# README.* linguist-detectable=true
+# LICENSE* linguist-detectable=true
+
+# 特定项目的自定义规则
+# /Assets/Plugins/Android/*.pro -text
+# /Assets/Plugins/iOS/*.pbxproj text eol=lf
