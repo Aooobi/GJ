@@ -32,6 +32,16 @@ public class RPG : MonoBehaviour
             characterStats.jumpHeight = initJumpHeight;
             Debug.Log("添加基础属性组件，设置初始值");
         }
+        else
+        {
+           
+            Debug.Log("初始化属性");
+        }
+
+      
+    }
+    private void Start()
+    {
         
     }
 
@@ -94,12 +104,12 @@ public class RPG : MonoBehaviour
     #region 移动逻辑
     private void Move()
     {
-        rb.velocity = new Vector2(horizontalInput * characterStats.moveSpeed , rb.velocity.y);
-        
+        rb.velocity = new Vector2(horizontalInput * characterStats.moveSpeed, rb.velocity.y);
+        Debug.Log("Horizontal Input: " + horizontalInput);
         //角色翻转
-        if(horizontalInput != 0)
+        if (horizontalInput != 0)
         {
-            sr.flipX = horizontalInput < 0; 
+            sr.flipX = horizontalInput < 0;
         }
     }
 
@@ -112,7 +122,7 @@ public class RPG : MonoBehaviour
         float currentJumpHeight = characterStats.jumpHeight;
         rb.velocity = new Vector2(rb.velocity.x, currentJumpHeight);//x为跳跃前的movespeed
         isGrounded = false; //之后velocity会逐渐减少括号内的数值
-
+        Debug.Log("跳跃");
     }
 
     #endregion
