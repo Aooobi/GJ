@@ -1,4 +1,4 @@
-# Spark Town: Rebirth of Embers
+# 花火镇：献祭
 
 ## 🎮 游戏简介
 
