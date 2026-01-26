@@ -23,6 +23,9 @@ public class NPC : MonoBehaviour
         rb = GetComponent<Rigidbody2D>();
         sr = GetComponent<SpriteRenderer>();
 
+        Physics2D.IgnoreLayerCollision(LayerMask.NameToLayer("NPC"), LayerMask.NameToLayer("NPC"),true);
+
+
         if(rb == null)
         {
             Debug.Log("NPCŒ¥π“‘ÿRigidbody2D");
