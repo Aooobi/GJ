@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 /// <summary>
-/// 村民npc移动脚本  基础的移动   衡玉 
+/// 村民npc移动脚本  基础的移动+npc之间接触会穿透+npc碰到主角会停住   衡玉 
 /// </summary>
 public class NPC : MonoBehaviour
 {
@@ -12,6 +12,11 @@ public class NPC : MonoBehaviour
     [SerializeField] private Transform villageleft;
     [SerializeField] private Transform villageright;
     private Vector2 targetPoint;
+
+    [Header("玩家碰撞检测")]
+    [SerializeField] private string playerTag = "Player";
+    private bool isTouchingPlayer = false;
+
 
     private Rigidbody2D rb;
     private SpriteRenderer sr;
@@ -24,7 +29,7 @@ public class NPC : MonoBehaviour
         sr = GetComponent<SpriteRenderer>();
 
         Physics2D.IgnoreLayerCollision(LayerMask.NameToLayer("NPC"), LayerMask.NameToLayer("NPC"),true);
-
+        //Physics2D.IgnoreLayerCollision(LayerMask.NameToLayer("NPC"), LayerMask.NameToLayer("Player"),true);
 
         if(rb == null)
         {
@@ -50,6 +55,19 @@ public class NPC : MonoBehaviour
     #region 巡逻
     private void NPCpatrol()
     {
+        //碰到主角会停止移动
+        if(isTouchingPlayer)
+        {
+            rb.velocity = new Vector2(0, rb.velocity.y);
+            //Physics2D.IgnoreLayerCollision(LayerMask.NameToLayer("NPC"), LayerMask.NameToLayer("Player"),false);
+            return;
+
+        }
+
+        //移动时，强制忽略主碰撞体和玩家的物理碰撞
+        //Physics.Ignore
+        //Physics2D.IgnoreLayerCollision(LayerMask.NameToLayer("NPC"), LayerMask.NameToLayer("Player"),true);
+
         //计算方向
         Vector2 direction = (targetPoint - (Vector2)transform.position).normalized;
         //移动
@@ -84,6 +102,31 @@ public class NPC : MonoBehaviour
         }
 
 
+
+    }
+
+
+
+    #endregion
+
+    #region 检测是否碰撞主角
+    //碰撞
+    private void OnCollisionEnter2D(Collision2D other)
+    {
+        if(other.gameObject.CompareTag(playerTag))
+        {
+            isTouchingPlayer = true;
+            Debug.Log("检测碰撞到主角，npc停下");
+        }
+    }
+    //离开 
+    private void OnCollisionExit2D(Collision2D other)
+    {
+        if(other.gameObject.CompareTag(playerTag))
+        {
+            isTouchingPlayer = false;
+            Debug.Log("离开主角,继续巡逻");
+        }
 
     }
 
