@@ -111,7 +111,7 @@ public class NPC : MonoBehaviour
 
     #region ¼ì²âÊÇ·ñÅö×²Ö÷½Ç
     //Åö×²
-    private void OnCollisionEnter2D(Collision2D other)
+    private void OnTriggerEnter2D(Collider2D other)
     {
         if(other.gameObject.CompareTag(playerTag))
         {
@@ -120,7 +120,7 @@ public class NPC : MonoBehaviour
         }
     }
     //Àë¿ª 
-    private void OnCollisionExit2D(Collision2D other)
+    private void OnTriggerExit2D(Collider2D other)
     {
         if(other.gameObject.CompareTag(playerTag))
         {
