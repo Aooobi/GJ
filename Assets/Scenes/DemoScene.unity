@@ -16339,6 +16339,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   initMoveSpeed: 10
   initJumpHeight: 5
+  heavyAttackCost: 1
+  baseAttackCD: 0.5
 --- !u!70 &1310700902
 CapsuleCollider2D:
   m_ObjectHideFlags: 0
