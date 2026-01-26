@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.EventSystems;
 
 /// <summary>
 /// 人物操作控制脚本  衡玉
@@ -72,6 +73,12 @@ public class RPG : MonoBehaviour
         if(Input.GetMouseButtonDown(0))
         {
             //轻攻击
+            
+            //背包的UI组件以及以后可能的UI控制：对此有修改
+            //如果点击的是 UI，就不攻击
+            if (EventSystem.current.IsPointerOverGameObject())
+                return;
+            
             LightAttack();
 
         }
@@ -79,6 +86,9 @@ public class RPG : MonoBehaviour
         //重攻击
         if(Input.GetMouseButtonDown(1))
         {
+            //如果点击的是 UI，就不攻击
+            if (EventSystem.current.IsPointerOverGameObject())
+                return;
             HeavyAttack();
 
         }
