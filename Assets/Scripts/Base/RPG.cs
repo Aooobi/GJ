@@ -2,12 +2,23 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+/// <summary>
+/// 人物操作控制脚本  衡玉
+/// </summary>
 public class RPG : MonoBehaviour
 {
     private CharacterStats characterStats;
     [Header("初始属性设置")]
     [SerializeField] private float initMoveSpeed = 1.0f;
     [SerializeField] private float initJumpHeight = 5.0f;
+
+    [Header("攻击设置")]
+    [SerializeField] private float heavyAttackCost = 1.0f;
+    [SerializeField] private float baseAttackCD = 0.5f;
+    private float lastLATime;
+    private float lastHATime;
+
+
 
     //组件引用 2d？
     private Rigidbody2D rb; //2d刚体
@@ -38,7 +49,8 @@ public class RPG : MonoBehaviour
             Debug.Log("初始化属性");
         }
 
-      
+        lastLATime = -baseAttackCD;
+        lastHATime = -baseAttackCD;
     }
     private void Start()
     {
@@ -60,7 +72,6 @@ public class RPG : MonoBehaviour
         if(Input.GetMouseButtonDown(0))
         {
             //轻攻击
-            // 右键？ 蓄力？（蓄力的动画/表示？）
             LightAttack();
 
         }
@@ -93,6 +104,14 @@ public class RPG : MonoBehaviour
             SkillF();
 
         }
+
+        #region 发射火球的方向
+        //Vector3 mousePos = Camera.main.ScreenToWord
+
+
+
+        #endregion
+
     }
 
     //物理更新
@@ -105,12 +124,13 @@ public class RPG : MonoBehaviour
     private void Move()
     {
         rb.velocity = new Vector2(horizontalInput * characterStats.moveSpeed, rb.velocity.y);
-        Debug.Log("Horizontal Input: " + horizontalInput);
+       // Debug.Log("Horizontal Input: " + horizontalInput);
         //角色翻转
         if (horizontalInput != 0)
         {
             sr.flipX = horizontalInput < 0;
         }
+        Debug.Log("行走");
     }
 
     #endregion
@@ -145,10 +165,36 @@ public class RPG : MonoBehaviour
 
     #region 攻击
 
-        #region 轻攻击方法
-        private void LightAttack()
+
+        #region 计算攻速
+        private float GetAttackCD()
         {
-            Debug.Log("释放轻攻击");
+            if(characterStats.attackSpeed <= 0)
+            {
+                return baseAttackCD;
+            }
+
+            //冷却时间 = 基础冷却 / 当前攻速
+            return baseAttackCD / characterStats.attackSpeed;
+
+        }
+
+
+        #endregion
+
+
+         #region 轻攻击方法
+         private void LightAttack()
+        {
+            float currentCD = GetAttackCD();
+            if(Time.time - lastLATime < currentCD)
+             {
+                Debug.Log($"攻击冷却中，剩余{currentCD - (Time.time - lastLATime)}秒");
+                return;
+             }
+            lastLATime = Time.time;
+            
+            Debug.Log($"释放轻攻击,当前攻速{characterStats.attackSpeed},剩余冷却时间：{currentCD}秒");
 
         }
 
@@ -157,13 +203,31 @@ public class RPG : MonoBehaviour
         #region 重攻击方法
         private void HeavyAttack()
         {
-            Debug.Log("释放重攻击");
+            float currentCD = GetAttackCD();
+            //检查攻击冷却
+            if(Time.time - lastHATime < currentCD)
+            {
+                Debug.Log($"攻击冷却中，剩余{currentCD - (Time.time - lastHATime):F1}秒");
+                return; 
+            }
+            //检查花火剩余值
+            if(!characterStats.ConsumeSparks(heavyAttackCost))
+            {
+                Debug.Log("花火值不足!");
+                return;
 
+            }
+            characterStats.fireBallShot();
+
+            lastHATime = Time.time;
+  
+            Debug.Log($"释放重攻击,消耗{heavyAttackCost}花火，剩余{characterStats.currentSparks}花火");
+            Debug.Log("效果拔群！");
         }
 
-    #endregion
+         #endregion
 
-    #endregion
+     #endregion
 
     #region 技能
 
