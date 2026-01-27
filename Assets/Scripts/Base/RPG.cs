@@ -17,6 +17,13 @@ public class RPG : MonoBehaviour
     [SerializeField] private float baseAttackCD = 0.5f;
     private float lastLATime;
     private float lastHATime;
+    
+    [Header("背包")]
+    [SerializeField] private GameObject backpackPanel;
+    private BP_Exit bpExitScript;
+
+    private bool BP_Open = false;
+
 
 
 
@@ -51,6 +58,13 @@ public class RPG : MonoBehaviour
 
         lastLATime = -baseAttackCD;
         lastHATime = -baseAttackCD;
+        
+        
+        // 获取背包面板上的BP_Exit脚本
+        if(backpackPanel != null)
+        {
+            bpExitScript = backpackPanel.GetComponent<BP_Exit>();
+        }
     }
     private void Start()
     {
@@ -87,7 +101,13 @@ public class RPG : MonoBehaviour
         //E技能
         if(Input.GetKeyDown(KeyCode.E))
         {
-            SkillE();
+            if (BP_Open == false) {
+                OpenInventory();
+                BP_Open = true;
+            } else {
+                CloseInventory();
+                BP_Open = false;
+            }
 
         }
 
@@ -232,13 +252,28 @@ public class RPG : MonoBehaviour
 
     #region 技能
 
-        #region 技能E
-        private void SkillE()
-        {
-            Debug.Log("释放技能E");
+    #region E交互背包
+    private void OpenInventory()
+    {
+        Debug.Log("打开背包");
 
+        if(bpExitScript != null)
+        {
+            bpExitScript.SlideInFromLeft(new Vector2(-305.5f,0f));
         }
-        #endregion
+
+    }
+    private void CloseInventory()
+    {
+        Debug.Log("关闭背包");
+
+        if(bpExitScript != null)
+        {
+            bpExitScript.SlideOutToLeft();
+        }
+
+    }
+    #endregion
 
         #region 技能F
         private void SkillF()
