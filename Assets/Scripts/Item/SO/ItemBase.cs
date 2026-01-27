@@ -9,6 +9,7 @@ public class ItemBase : ScriptableObject
     [TextArea]
     public string description;
     public int maxStack = 1;
+    public int itemHeld;
     public ItemType itemType;
     
     public enum ItemType
