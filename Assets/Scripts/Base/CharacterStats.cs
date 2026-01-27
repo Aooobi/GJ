@@ -12,45 +12,79 @@ using UnityEngine;
  */
 
 #region 道具稀有度
+
 public enum rareLevel
 {
     one,  //村庄
     two,
-    three //最高级
+    three, //最高级
+    player
 };
 
+#endregion
+
+#region  道具属性加成
+public enum AddType
+{ 
+    //生命
+    MaxHealth,
+    CurrentHealth,
+
+    //花火值
+    MaxSparks,
+    CurrentSparks,
+
+    //移动参数
+    MoveSpeed,
+    JumpHeight,
+
+    //攻击
+    LightAttack,
+    LAspeed,
+    HeavyAttack,
+    HAspeed,
+
+    //防御力
+    Defense,
+
+}
 
 
 #endregion
 
+
 public class CharacterStats : MonoBehaviour
 {
     #region 基础数值
+    [Header("生命")]
     //生命
     public float maxHealth; 
     public float currentHealth;
 
     //花火值
+    [Header("花火值")]
     public float maxSparks = 3f;
     public float currentSparks = 3f;
 
     //移动参数
+    [Header("移动参数")]
     [HideInInspector]public float baseMoveSpeed=5f;
     public float moveSpeed;//当前
-
-    [HideInInspector]public float baseAttackSpeed = 1f;
-    public float attackSpeed;
-
+  
     [HideInInspector]public float baseJumpHeight=10f;
     public float jumpHeight;//当前
 
     //攻击力
+    [Header("攻击")]
     public float baseLightAttack;
     public float baseHeavyAttack;
     public float lightAttack;//当前
-    public float HeavyAttack;//当前
+    public float heavyAttack;//当前
+    [HideInInspector] public float baseAttackSpeed = 1f;
+    public float attackSpeed;
 
     //防御力
+    [Header("防御")]
     public float Defense;
 
     #endregion
@@ -74,13 +108,16 @@ public class CharacterStats : MonoBehaviour
 
     #endregion
 
-    #region 火花子弹
+
+    #region 花火子弹
+    [Header("花火子弹")]
     public GameObject fireBall;
     public Transform fireBallPoint;
 
     #endregion
 
     #region 稀有度
+    [Header("稀有度")]
     public rareLevel nowRareLevel;
     #endregion
 
@@ -94,7 +131,7 @@ public class CharacterStats : MonoBehaviour
         HAgrowTime = 0f;
         APgrowTime = 0f;
         lightAttack = baseLightAttack;
-        HeavyAttack = baseHeavyAttack;
+        heavyAttack = baseHeavyAttack;
 
         moveSpeed = baseMoveSpeed;
         MovegrowTime = 0f;
@@ -130,7 +167,7 @@ public class CharacterStats : MonoBehaviour
             HAgrowTime -= Time.deltaTime; //倒计时
             if (HAgrowTime <= 0f)
             {
-                HeavyAttack = baseHeavyAttack;
+                heavyAttack = baseHeavyAttack;
                 HAgrowTime = 0f;
 
                 Debug.Log("重攻击增益结束，恢复基础值：" + baseHeavyAttack);
@@ -240,9 +277,9 @@ public class CharacterStats : MonoBehaviour
         this.HAgrowTime = HAgrowTime;
         this.HAgrowValue = HAgrowValue;
 
-        HeavyAttack += HAgrowValue;
+        heavyAttack += HAgrowValue;
 
-        Debug.Log($"重攻击提升至{HeavyAttack}，持续{HAgrowTime}秒");
+        Debug.Log($"重攻击提升至{heavyAttack}，持续{HAgrowTime}秒");
     }
 
 
@@ -268,6 +305,119 @@ public class CharacterStats : MonoBehaviour
         Debug.Log($"攻速提升至{attackSpeed},持续{APgrowTime}秒" );
 
     }
+
+    #region 接口：属性增减
+    /// <summary>
+    /// 用于装备道具属性增减的接口
+    /// </summary>
+    /// 
+    public bool WearAdd(AddType addType, float value, bool isPermanent = true, float duration = 0f)
+    {
+        try
+        {
+            if (isPermanent) //永久属性
+            {
+                switch (addType)
+                {
+                    #region 属性永久提升
+                    //生命相关
+                    case AddType.MaxHealth:
+                        ChangeMaxHealth(value);
+                        Debug.Log($"最大生命值永久提升+{value},当前最大生命值为{maxHealth}");
+                        break;
+                    case AddType.CurrentHealth:
+                        ChangeHealth(value);
+                        Debug.Log($"当前生命值提升+{value},当前生命值为{currentHealth}");
+                        break;
+                    //花火值相关
+                    case AddType.MaxSparks:
+                        ResumemaxSparks(value);
+                        Debug.Log($"最大花火值永久提升+{value},当前最大花火值为{maxSparks}");
+                        break;
+                    case AddType.CurrentSparks:
+                        ResumeSparks(value);
+                        Debug.Log($"当前花火值提升+{value},当前花火值为{currentSparks}");
+                        break;
+                    //移动参数
+                    case AddType.MoveSpeed:
+                        moveSpeed += value;
+                        Debug.Log($"移动速度永久提升+{value},当前移动速度为{moveSpeed}");
+                        break;
+                    case AddType.JumpHeight:
+                        jumpHeight += value;
+                        Debug.Log($"跳跃高度永久提升+{value},当前跳跃高度为{jumpHeight}");
+                        break;
+
+                    //攻击相关
+                    case AddType.LightAttack:
+                        lightAttack += value;
+                        Debug.Log($"轻攻击永久提升+{value},当前轻攻击为{lightAttack}");
+                        break;
+                    case AddType.HeavyAttack:
+                        heavyAttack += value;
+                        Debug.Log($"重攻击永久提升+{value},当前重攻击为{heavyAttack}");
+                        break;
+                    case AddType.LAspeed:
+                        attackSpeed += value;
+                        Debug.Log($"攻击速度永久提升+{value},当前攻击速度为{attackSpeed}");
+                        break;
+                    case AddType.HAspeed:
+                        attackSpeed += value;
+                        Debug.Log($"攻击速度永久提升+{value},当前攻击速度为{attackSpeed}");
+                        break;
+                    //防御
+                    case AddType.Defense:
+                        Defense += value;
+                        Debug.Log($"防御力永久提升+{value},当前防御力为{Defense}");
+                        break;
+
+
+                        #endregion
+
+                }
+            }
+            else //短时间提升
+            {
+                switch (addType)
+                {
+                    #region 短时间提升
+                    case AddType.LightAttack:
+                        UpLightAtk(value, duration);
+                        break;
+                    case AddType.HeavyAttack:
+                        UpHeavyAtk(value, duration);
+                        break;
+                    case AddType.MoveSpeed:
+                        UpMoveSpeed(value, duration);
+                        break;
+                    case AddType.LAspeed: // 轻攻击速度=攻速
+                        UpAttackSpeed(value, duration);
+                        break;
+                    case AddType.HAspeed: // 重攻击速度=攻速（简化）
+                        UpAttackSpeed(value, duration);
+                        break;
+                    default:
+                        Debug.LogWarning($"属性{addType}暂不支持临时修改，仅支持永久修改");
+                        return false;
+
+                        #endregion
+
+                }
+
+            }
+            return true;
+        }
+        catch(System.Exception e)
+        {
+            Debug.LogError($"属性修改失败：{e.Message}");
+
+            return false;
+        }
+
+    }
+
+    #endregion
+
 
     #endregion
 

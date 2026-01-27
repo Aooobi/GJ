@@ -68679,7 +68679,7 @@ GameObject:
   - component: {fileID: 968150747}
   - component: {fileID: 968150746}
   m_Layer: 0
-  m_Name: NPC
+  m_Name: 11
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -68714,7 +68714,7 @@ CapsuleCollider2D:
   m_CallbackLayers:
     serializedVersion: 2
     m_Bits: 4294967295
-  m_IsTrigger: 0
+  m_IsTrigger: 1
   m_UsedByEffector: 0
   m_UsedByComposite: 0
   m_Offset: {x: 0, y: 0}
@@ -68735,7 +68735,7 @@ Rigidbody2D:
   m_Mass: 1
   m_LinearDrag: 0
   m_AngularDrag: 0.05
-  m_GravityScale: 1
+  m_GravityScale: 0
   m_Material: {fileID: 0}
   m_IncludeLayers:
     serializedVersion: 2
@@ -68808,7 +68808,7 @@ Transform:
   m_GameObject: {fileID: 968150745}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 10.1, y: -1.94, z: 0}
+  m_LocalPosition: {x: 1.75, y: -1.94, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -69522,8 +69522,10 @@ GameObject:
   - component: {fileID: 1190885813}
   - component: {fileID: 1190885812}
   - component: {fileID: 1190885811}
+  - component: {fileID: 1190885815}
+  - component: {fileID: 1190885816}
   m_Layer: 0
-  m_Name: NPC
+  m_Name: Monster
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -69590,7 +69592,7 @@ Rigidbody2D:
   m_Interpolate: 0
   m_SleepingMode: 1
   m_CollisionDetection: 0
-  m_Constraints: 0
+  m_Constraints: 4
 --- !u!212 &1190885813
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -69633,7 +69635,7 @@ SpriteRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_Sprite: {fileID: -9095717837082945937, guid: 207ee8102dd4143d288186ef0be518ee, type: 3}
-  m_Color: {r: 0.028301895, g: 0.3664105, b: 1, a: 1}
+  m_Color: {r: 0.027450979, g: 1, b: 0.44117197, a: 1}
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0
@@ -69652,12 +69654,60 @@ Transform:
   m_GameObject: {fileID: 1190885810}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 18.8, y: -1.94, z: 0}
+  m_LocalPosition: {x: 23.05, y: -1.94, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 73622440}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1190885815
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1190885810}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0f36c4efeeee2fb42beeac63fa414f46, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  place1: {fileID: 968150749}
+  place2: {fileID: 1882592111}
+  moveSpeed: 2
+  chaseRange: 5
+  chaseSpeed: 3
+  chaseBuffer: 1
+--- !u!114 &1190885816
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1190885810}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b21d302bc7887e147aacf9d875f42c13, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  maxHealth: 0
+  currentHealth: 0
+  maxSparks: 3
+  currentSparks: 3
+  baseMoveSpeed: 5
+  moveSpeed: 0
+  baseJumpHeight: 10
+  jumpHeight: 0
+  baseLightAttack: 0
+  baseHeavyAttack: 0
+  lightAttack: 0
+  heavyAttack: 0
+  baseAttackSpeed: 1
+  attackSpeed: 0
+  Defense: 0
+  fireBall: {fileID: 0}
+  fireBallPoint: {fileID: 0}
+  nowRareLevel: 0
 --- !u!1 &1193948166
 GameObject:
   m_ObjectHideFlags: 0
@@ -70286,6 +70336,7 @@ GameObject:
   - component: {fileID: 1310700903}
   - component: {fileID: 1310700902}
   - component: {fileID: 1310700904}
+  - component: {fileID: 1310700905}
   m_Layer: 7
   m_Name: Player
   m_TagString: Player
@@ -70460,6 +70511,36 @@ Animator:
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorStateOnDisable: 0
   m_WriteDefaultValuesOnDisable: 0
+--- !u!114 &1310700905
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1310700898}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b21d302bc7887e147aacf9d875f42c13, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  maxHealth: 0
+  currentHealth: 0
+  maxSparks: 3
+  currentSparks: 3
+  baseMoveSpeed: 5
+  moveSpeed: 0
+  baseJumpHeight: 10
+  jumpHeight: 0
+  baseLightAttack: 0
+  baseHeavyAttack: 0
+  lightAttack: 0
+  heavyAttack: 0
+  baseAttackSpeed: 1
+  attackSpeed: 0
+  Defense: 0
+  fireBall: {fileID: 0}
+  fireBallPoint: {fileID: 0}
+  nowRareLevel: 0
 --- !u!1 &1374626396
 GameObject:
   m_ObjectHideFlags: 0
@@ -71255,7 +71336,7 @@ CapsuleCollider2D:
   m_CallbackLayers:
     serializedVersion: 2
     m_Bits: 4294967295
-  m_IsTrigger: 0
+  m_IsTrigger: 1
   m_UsedByEffector: 0
   m_UsedByComposite: 0
   m_Offset: {x: 0, y: 0}
@@ -71276,7 +71357,7 @@ Rigidbody2D:
   m_Mass: 1
   m_LinearDrag: 0
   m_AngularDrag: 0.05
-  m_GravityScale: 1
+  m_GravityScale: 0
   m_Material: {fileID: 0}
   m_IncludeLayers:
     serializedVersion: 2
@@ -72476,7 +72557,7 @@ GameObject:
   - component: {fileID: 1882592109}
   - component: {fileID: 1882592108}
   m_Layer: 0
-  m_Name: NPC
+  m_Name: 22
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -72511,7 +72592,7 @@ CapsuleCollider2D:
   m_CallbackLayers:
     serializedVersion: 2
     m_Bits: 4294967295
-  m_IsTrigger: 0
+  m_IsTrigger: 1
   m_UsedByEffector: 0
   m_UsedByComposite: 0
   m_Offset: {x: 0, y: 0}
@@ -72532,7 +72613,7 @@ Rigidbody2D:
   m_Mass: 1
   m_LinearDrag: 0
   m_AngularDrag: 0.05
-  m_GravityScale: 1
+  m_GravityScale: 0
   m_Material: {fileID: 0}
   m_IncludeLayers:
     serializedVersion: 2
@@ -72605,7 +72686,7 @@ Transform:
   m_GameObject: {fileID: 1882592107}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 14.5, y: -1.94, z: 0}
+  m_LocalPosition: {x: 30.1, y: -1.94, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -72872,7 +72953,7 @@ CapsuleCollider2D:
   m_CallbackLayers:
     serializedVersion: 2
     m_Bits: 4294967295
-  m_IsTrigger: 0
+  m_IsTrigger: 1
   m_UsedByEffector: 0
   m_UsedByComposite: 0
   m_Offset: {x: 0, y: 0}
@@ -72893,7 +72974,7 @@ Rigidbody2D:
   m_Mass: 1
   m_LinearDrag: 0
   m_AngularDrag: 0.05
-  m_GravityScale: 1
+  m_GravityScale: 0
   m_Material: {fileID: 0}
   m_IncludeLayers:
     serializedVersion: 2

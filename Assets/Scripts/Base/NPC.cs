@@ -17,6 +17,9 @@ public class NPC : MonoBehaviour
     [SerializeField] private string playerTag = "Player";
     private bool isTouchingPlayer = false;
 
+    [Header("祭坛刷新")]
+    [SerializeField] private Transform FreshPoint;
+
 
     private Rigidbody2D rb;
     private SpriteRenderer sr;
@@ -36,7 +39,11 @@ public class NPC : MonoBehaviour
             Debug.Log("NPC未挂载Rigidbody2D");
             return;
         }
-
+        if(FreshPoint == null)
+        {
+            Debug.Log("脚本未关联祭坛位置");
+            return;
+        }
     }
 
     private void Start()
@@ -51,6 +58,32 @@ public class NPC : MonoBehaviour
 
 
     }
+
+    #region 传送到预设位置
+    public void TeleportToFreshPoint()
+    {
+        Vector2 targetPos = FreshPoint != null ? FreshPoint.position : transform.position;
+
+        //传送
+        transform.position = targetPos;
+        Debug.Log("村民已传送到祭坛位置");
+
+        //重置状态
+        if(rb != null)
+        {
+            rb.velocity = Vector2.zero;
+            isTouchingPlayer = false;
+        }
+
+        //重新随机目标点
+        RandomPoint();
+
+
+    }
+
+
+    #endregion
+
 
     #region 巡逻
     private void NPCpatrol()
@@ -133,4 +166,6 @@ public class NPC : MonoBehaviour
 
 
     #endregion
+
+
 }
