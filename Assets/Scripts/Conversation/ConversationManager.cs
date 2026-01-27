@@ -31,6 +31,9 @@ public class ConversationManager : MonoBehaviour
 
     public ConversationGroup currentConversation;
     //public List<ConversationUnit> CurrentConversation;
+
+    [Header("预制体")]
+    public Button OptionPrefab;
     private void Awake()
     {
         if(instance==null)
@@ -141,6 +144,10 @@ public class ConversationManager : MonoBehaviour
                 //注意 选项的Text 实际上就是玩家对上一个对话组最后一个Content的回答
 
                 //TODO 根据TExt生成选项按钮
+                for (int i = 0; i < currentConversation.NextGroupName.Count; i++)
+                {
+
+                }
 
                 //TODO 选项按钮 button.onclick 绑定匿名函数
             }
