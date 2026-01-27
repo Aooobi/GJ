@@ -12,7 +12,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: cf220b45eac5b0c40ba93669d26e115c, type: 3}
   m_Name: "\u6D4B\u8BD5\u5BF9\u8BDD1-\u9009\u98792"
   m_EditorClassIdentifier: 
-  GroupName: 
-  Conversations: []
+  GroupName: "\u6D4B\u8BD5\u5BF9\u8BDD1-\u9009\u98792"
+  Conversations:
+  - SpeakerName: "\u654C\u4EBA"
+    Content: "\u53FD\u91CC\u5495\u565C\u8BF4\u4EC0\u4E48\u73A9\u610F\u5462"
+  - SpeakerName: "\u654C\u4EBA"
+    Content: "\u5BFF\u53F8"
   NextGroup: []
-  NextGroupName: []
+  NextGroupText: []

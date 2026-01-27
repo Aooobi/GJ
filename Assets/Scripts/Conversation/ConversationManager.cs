@@ -1,9 +1,10 @@
-using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
-using UnityEngine.UI;
 using DG.Tweening;
 using System;
+using System.Collections;
+using System.Collections.Generic;
+using UnityEditor.UIElements;
+using UnityEngine;
+using UnityEngine.UI;
 
 public class ConversationManager : MonoBehaviour
 {
@@ -33,6 +34,7 @@ public class ConversationManager : MonoBehaviour
     //public List<ConversationUnit> CurrentConversation;
 
     [Header("预制体")]
+    public RectTransform OptionParent;//gridlayout
     public Button OptionPrefab;
     private void Awake()
     {
@@ -59,6 +61,8 @@ public class ConversationManager : MonoBehaviour
         {
             AllConversation.Add(convo);
         }
+
+        LoadConversationByName("测试对话1");
     }
 
     public void StartConversation(bool fade_or_not = false)
@@ -142,14 +146,37 @@ public class ConversationManager : MonoBehaviour
             {
                 //有后续对话组 那么就按照下一组对话的string生成选项 选项绑定前往对应对话组
                 //注意 选项的Text 实际上就是玩家对上一个对话组最后一个Content的回答
-
-                //TODO 根据TExt生成选项按钮
-                for (int i = 0; i < currentConversation.NextGroupName.Count; i++)
+                if (OptionParent.childCount > 0) return; //已经生成选项按钮 则不再生成
+                                                         //TODO 根据TExt生成选项按钮
+                                                         // 修改Go()方法中的选项生成部分：
+                for (int i = 0; i < currentConversation.NextGroup.Count; i++)
                 {
+                    // 关键：创建局部变量
+                    int index = i;
+                    Button option = Instantiate<Button>(OptionPrefab, OptionParent, false);
+                    option.GetComponentInChildren<Text>().text = currentConversation.NextGroupText[index];
 
+                    option.onClick.AddListener(() =>
+                    {
+                        // 使用局部变量index，而不是i
+                        currentConversation = currentConversation.NextGroup[index];
+                        currentIndex = 0;
+
+                        // 清空显示
+                        Content.text = string.Empty;
+                        Name.text = string.Empty;
+
+                        // 销毁所有选项按钮
+                        foreach (Transform child in OptionParent)
+                        {
+                            Destroy(child.gameObject);
+                        }
+
+                        // 开始新对话（不需要调用Go()，StartConversation会调用）
+                        StartConversation();
+                    });
                 }
 
-                //TODO 选项按钮 button.onclick 绑定匿名函数
             }
 
             return;
@@ -186,31 +213,35 @@ public class ConversationManager : MonoBehaviour
     /// 对外全局加载接口
     /// </summary>
     /// <param name="conversationUnits"></param>
-    public void LoadConversationByName(string conversationName)
+    public void LoadConversationByName(string conversationName,bool black_or_not = false)
     {
-        if (currentConversation != null)
+        if (!BackgroundPanel.gameObject.activeInHierarchy)
         {
-            Debug.Log("已经有对话正在进行");
-            return;
+            BackgroundPanel.gameObject.SetActive(true);
         }
+
 
         for (int i = 0; i < AllConversation.Count; i++)
         {
             //找到对应名字的对话组
-            if (AllConversation[i].GroupName == conversationName)
+            if (AllConversation[i].name == conversationName)
             {
                 currentConversation = AllConversation[i];
+                currentIndex = 0;
+                StartConversation(black_or_not);
                 break;
             }
         }
-        currentIndex = 0;
-        StartConversation();
+
     }
 
     public void EndConversation()
     {
         //直接隐藏对话面板
         BackgroundPanel.gameObject.SetActive(false);
+        //电影黑边收起
+        TopBar.DOFillAmount(0,0.5f).SetEase(Ease.Linear);
+        BottomBar.DOFillAmount(0, 0.5f).SetEase(Ease.Linear);
         //对话结束 还是调用淡出淡入
         UIFadeEffect.Instance.FadeOutAndFadeIn(() => {
             //第一个形参 黑屏调用

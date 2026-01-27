@@ -7,5 +7,4 @@ public class ConversationUnit
 {
     public string SpeakerName;
     [TextArea(3,20)]public string Content;
-    public string AnimationValue;
 }

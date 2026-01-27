@@ -16,7 +16,11 @@ MonoBehaviour:
   Conversations:
   - SpeakerName: "\u6211"
     Content: "\u73B0\u5728\u5F00\u59CB\u6D4B\u8BD5"
-    SpeakSound: {fileID: 0}
-    AnimationValue: 
-  NextGroup: []
-  NextGroupName: []
+  - SpeakerName: "\u654C\u4EBA"
+    Content: "\u4F60\u5728\u5E72\u4EC0\u4E48"
+  NextGroup:
+  - {fileID: 11400000, guid: 3e34c6cba00f98b4fa0376f1670c14f2, type: 2}
+  - {fileID: 11400000, guid: 77d4d843284b52f46b2f013d79bb8dab, type: 2}
+  NextGroupText:
+  - "\u6211\u4E3A\u4EC0\u4E48\u8981\u544A\u8BC9\u4F60"
+  - "\u6211\u5728\u62C9\u5C4E"
