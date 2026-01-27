@@ -27,7 +27,10 @@ public class ConversationManager : MonoBehaviour
     private bool isLastModeClickMode;
 
     //当前装载的对话组
-    public List<ConversationUnit> CurrentConversation;
+    public List<ConversationGroup> AllConversation = new List<ConversationGroup>();
+
+    public ConversationGroup currentConversation;
+    //public List<ConversationUnit> CurrentConversation;
     private void Awake()
     {
         if(instance==null)
@@ -42,15 +45,22 @@ public class ConversationManager : MonoBehaviour
     void Start()
     {
         if (Player == null)
-       //     Player = Interactor.Instance_Player; //需要从单例获取
-        CurrentConversation = null;
+            //     Player = Interactor.Instance_Player; //需要从单例获取
+            currentConversation = null;
         BackgroundPanel.gameObject.SetActive(false);
         //StartConversation(SpeakerTransform);//测试
+
+        //初始化所有对话组
+        var allConversations = Resources.LoadAll<ConversationGroup>("ConversationGroups"); 
+        foreach(var convo in allConversations)
+        {
+            AllConversation.Add(convo);
+        }
     }
 
-    public void StartConversation(Transform target , bool fade_or_not = false)
+    public void StartConversation(bool fade_or_not = false)
     {
-        if (CurrentConversation == null)
+        if (currentConversation == null)
         {
             Debug.LogWarning("对话未装载，无法开始对话");
             return;
@@ -97,14 +107,14 @@ public class ConversationManager : MonoBehaviour
     //装载、前进对话
     public void Go()
     {
-        if (CurrentConversation == null)
+        if (currentConversation == null || currentConversation.Conversations == null)
         {
             //对话未装载
             Debug.LogWarning("对话未装载");
             //MessagePool.Instance.CreateMessage("对话未装载", Color.red);
             return;
         }
-        if (CurrentConversation.Count == 0)
+        if (currentConversation.Conversations.Count == 0)
         {
             Debug.LogWarning("对话未装载");
             //MessagePool.Instance.CreateMessage("对话没有内容", Color.yellow);
@@ -117,8 +127,11 @@ public class ConversationManager : MonoBehaviour
             return;
         }
         //首先判断对话是否结束
-        if (currentIndex >= CurrentConversation.Count)
+        if (currentIndex >= currentConversation.Conversations.Count)
         {
+            //如果该对话组没有后续的对话组 直接结束对话
+            
+
             EndConversation();
             return;
         }
@@ -131,15 +144,15 @@ public class ConversationManager : MonoBehaviour
         {
             //正在打字中，直接显示完整内容
             Content.DOKill();//先杀掉之前的动画
-            Content.text = CurrentConversation[currentIndex].Content;
+            Content.text = currentConversation.Conversations[currentIndex].Content;
             currentIndex++;
             isTyping = false;
             return;
         }
         //按照字数计算打字时间
-        float duration = TypeSpeed * CurrentConversation[currentIndex].Content.Length;
-        Name.text = CurrentConversation[currentIndex].SpeakerName;
-        Content.DOText(CurrentConversation[currentIndex].Content, duration).SetEase(Ease.Linear)
+        float duration = TypeSpeed * currentConversation.Conversations[currentIndex].Content.Length;
+        Name.text = currentConversation.Conversations[currentIndex].SpeakerName;
+        Content.DOText(currentConversation.Conversations[currentIndex].Content, duration).SetEase(Ease.Linear)
             .OnStart(() =>
             {
                 isTyping = true;
@@ -148,39 +161,31 @@ public class ConversationManager : MonoBehaviour
                 currentIndex++;
                 isTyping = false;
             });
-
-
     }
 
     /// <summary>
     /// 对外全局加载接口
     /// </summary>
     /// <param name="conversationUnits"></param>
-    public void LoadConversation(List<ConversationUnit> conversationUnits,Transform speaker = null)
+    public void LoadConversationByName(string conversationName)
     {
-        if(conversationUnits == null)
-        {
-            Debug.LogWarning("加载对话组不存在");
-            return;
-        }
-        if(conversationUnits.Count == 0)
-        {
-            Debug.LogWarning("加载对话组0条消息");
-            return;
-        }
-        if (CurrentConversation != null)
+        if (currentConversation != null)
         {
             Debug.Log("已经有对话正在进行");
             return;
         }
-        if(speaker == null)
-        {
-            Debug.Log("没有设置对话对象，摄像机将使用默认位置");
-        }
 
-        CurrentConversation = conversationUnits;
+        for (int i = 0; i < AllConversation.Count; i++)
+        {
+            //找到对应名字的对话组
+            if (AllConversation[i].GroupName == conversationName)
+            {
+                currentConversation = AllConversation[i];
+                break;
+            }
+        }
         currentIndex = 0;
-        StartConversation(speaker);
+        StartConversation();
     }
 
     public void EndConversation()
@@ -193,7 +198,7 @@ public class ConversationManager : MonoBehaviour
             currentIndex = -1;
             
             //当前装载的对话组清空
-            CurrentConversation = null;
+            currentConversation = null;
             Content.text = string.Empty;
             Name.text = string.Empty;
             
