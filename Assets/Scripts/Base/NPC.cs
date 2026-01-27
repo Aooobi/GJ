@@ -20,6 +20,9 @@ public class NPC : MonoBehaviour
     [Header("祭坛刷新")]
     [SerializeField] private Transform FreshPoint;
 
+    [Header("刷新头顶提示配置")]
+    [SerializeField] private GameObject textPrefab;
+    [SerializeField] private Canvas mainCanvas;
 
     private Rigidbody2D rb;
     private SpriteRenderer sr;
@@ -68,8 +71,9 @@ public class NPC : MonoBehaviour
         transform.position = targetPos;
         Debug.Log("村民已传送到祭坛位置");
 
+        ShowRefreshText();
         //重置状态
-        if(rb != null)
+        if (rb != null)
         {
             rb.velocity = Vector2.zero;
             isTouchingPlayer = false;
@@ -81,8 +85,31 @@ public class NPC : MonoBehaviour
 
     }
 
+    #endregion
+
+    #region 头顶刷新显示
+    private void ShowRefreshText()
+    {
+        if(textPrefab == null || mainCanvas == null)
+        {
+            return;
+        }
+        //实例化
+        GameObject textObj = Instantiate(textPrefab,mainCanvas.transform);
+       
+
+        Vector3 worldPos = transform.position + new Vector3(0,2f,0);
+        Vector2 screenPos = Camera.main.WorldToScreenPoint(worldPos);
+        textObj.GetComponent<RectTransform>().position = screenPos;
+
+        //2秒后自动销毁
+        Destroy(textObj, 3f);
+
+
+    }
 
     #endregion
+
 
 
     #region 巡逻
