@@ -130,9 +130,21 @@ public class ConversationManager : MonoBehaviour
         if (currentIndex >= currentConversation.Conversations.Count)
         {
             //如果该对话组没有后续的对话组 直接结束对话
-            
+            if(currentConversation.NextGroup.Count == 0)
+            {
+                //没有下一组对话 结束对话
+                EndConversation();
+            }
+            else
+            {
+                //有后续对话组 那么就按照下一组对话的string生成选项 选项绑定前往对应对话组
+                //注意 选项的Text 实际上就是玩家对上一个对话组最后一个Content的回答
 
-            EndConversation();
+                //TODO 根据TExt生成选项按钮
+
+                //TODO 选项按钮 button.onclick 绑定匿名函数
+            }
+
             return;
         }
 
