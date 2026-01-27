@@ -25,6 +25,7 @@ public class Monsters : MonoBehaviour
         monstersStats = GetComponent<CharacterStats>();
         rb = GetComponent<Rigidbody2D>();
         sr = GetComponent<SpriteRenderer>();
+        Physics2D.IgnoreLayerCollision(LayerMask.NameToLayer("Monster"),LayerMask.NameToLayer("Monster"),true);
 
         if(monstersStats == null )
         {

@@ -62,8 +62,9 @@ public class RPG : MonoBehaviour
         horizontalInput = Input.GetAxis("Horizontal"); //-1左 0不动 1右
 
         //跳跃
-        if(Input.GetKeyDown(KeyCode.Space) && isGrounded)
+        if(Input.GetKeyDown(KeyCode.Space))
         {
+            if(isGrounded)
              Jump();
 
         }
@@ -126,10 +127,10 @@ public class RPG : MonoBehaviour
         rb.velocity = new Vector2(horizontalInput * characterStats.moveSpeed, rb.velocity.y);
        // Debug.Log("Horizontal Input: " + horizontalInput);
         //角色翻转
-        if (horizontalInput != 0)
-        {
-            sr.flipX = horizontalInput < 0;
-        }
+        //if (horizontalInput != 0)
+        //{
+        //    sr.flipX = horizontalInput < 0;
+        //}
         Debug.Log("行走");
     }
 
