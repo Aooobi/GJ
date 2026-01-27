@@ -15,6 +15,15 @@ public class Monsters : MonoBehaviour
     [SerializeField] private float moveSpeed =2f;
     private Vector2 targetPoint;
 
+    [Header("怪物追踪逻辑")]
+    [SerializeField] private float chaseRange = 5f;//追踪范围
+    [SerializeField] private float chaseSpeed = 3f;//追踪速度
+    [SerializeField] private float chaseBuffer = 1f;//脱战缓冲区间
+    private bool isChasing = false;
+    private float detectInterval = 0.2f;//检测间隔时间 避免每一帧检测 优化性能
+    private float lastDetectTime; //上次检测时间
+
+
     private CharacterStats monstersStats;
     private Rigidbody2D rb;
     private SpriteRenderer sr;
@@ -47,13 +56,37 @@ public class Monsters : MonoBehaviour
     {
         RandomPoint();
 
+        //初始化检测时间
+        lastDetectTime = Time.time;
+
     }
 
 
     private void Update()
     {
-        Patrol();
+        //性能优化 每隔0.2秒检测一次玩家 而不是每一帧
+        if(Time.time - lastDetectTime >= detectInterval)
+        {
+            CheckPlayerInRange();
+            lastDetectTime = Time.time;
 
+        }
+
+        if(isChasing)
+        {
+            if(player != null)
+            {
+
+                ChasePlayer();
+
+            }
+
+        }
+        else
+        {
+            Patrol();
+
+        }
 
     }
 
@@ -99,5 +132,50 @@ public class Monsters : MonoBehaviour
 
     #endregion
 
+
+    #region 检测玩家
+    private void CheckPlayerInRange()
+    { 
+        if (player == null)
+        {
+            return;
+        }
+
+        float distance = Vector2.Distance(transform.position , player.position);
+
+        if(distance <= chaseRange)
+        {
+            isChasing = true;
+            Debug.Log("检测到玩家，开始追逐");
+        }
+        else if(distance > chaseRange + chaseBuffer)
+        {
+            isChasing = false;
+            Debug.Log("未检测到，脱战");
+        }
+
+       
+    
+    
+    }
+
+
+
+
+    #endregion
+
+
+    #region 追踪玩家
+    private void ChasePlayer()
+    {
+        //计算方向
+        Vector2 direction = (player.position - transform.position).normalized;
+        //向玩家移动
+        rb.velocity = new Vector2(direction.x * chaseSpeed , rb.velocity.y);
+
+    }
+
+
+    #endregion
 
 }
