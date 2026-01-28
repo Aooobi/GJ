@@ -5,6 +5,8 @@ TagManager:
   serializedVersion: 2
   tags:
   - Ground
+  - NPC
+  - Monster
   layers:
   - Default
   - TransparentFX
@@ -12,9 +14,9 @@ TagManager:
   - Ground
   - Water
   - UI
-  - 
-  - 
-  - 
+  - NPC
+  - Player
+  - Monster
   - 
   - 
   - 

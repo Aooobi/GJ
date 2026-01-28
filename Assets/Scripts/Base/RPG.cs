@@ -8,6 +8,7 @@ using UnityEngine;
 public class RPG : MonoBehaviour
 {
     private CharacterStats characterStats;
+    private Attack attackSystem; //引用攻击脚本
     [Header("初始属性设置")]
     [SerializeField] private float initMoveSpeed = 1.0f;
     [SerializeField] private float initJumpHeight = 5.0f;
@@ -18,6 +19,17 @@ public class RPG : MonoBehaviour
     private float lastLATime;
     private float lastHATime;
 
+    [Header("初始火球贴图")]
+    [SerializeField] private Sprite fireBallSprite;
+
+    [Header("人物贴图")]
+    [SerializeField] private Sprite characterSprite;
+
+    [Header("背包")]
+    [SerializeField] private GameObject backpackPanel;
+    private BP_Exit bpExitScript;
+
+    private bool BP_Open = false;
 
 
     //组件引用 2d？
@@ -34,6 +46,16 @@ public class RPG : MonoBehaviour
     {
         rb = GetComponent<Rigidbody2D>();
         sr = GetComponent<SpriteRenderer>();
+
+        if(characterSprite != null)
+        {
+            sr.sprite = characterSprite;
+
+        }
+        //float baseScale = 8f;
+        //transform.localScale = new Vector3(Mathf.Sign(transform.localScale.x) * baseScale, baseScale, 1);
+
+
 
         characterStats = GetComponent<CharacterStats>(); //把基础属性面板上的数值放进来
         if(characterStats == null)
@@ -62,8 +84,9 @@ public class RPG : MonoBehaviour
         horizontalInput = Input.GetAxis("Horizontal"); //-1左 0不动 1右
 
         //跳跃
-        if(Input.GetKeyDown(KeyCode.Space) && isGrounded)
+        if(Input.GetKeyDown(KeyCode.Space))
         {
+            if(isGrounded)
              Jump();
 
         }
@@ -84,15 +107,24 @@ public class RPG : MonoBehaviour
         }
 
         //E技能
-        if(Input.GetKeyDown(KeyCode.E))
+        if (Input.GetKeyDown(KeyCode.E))
         {
-            SkillE();
+            if (BP_Open == false)
+            {
+                OpenInventory();
+                BP_Open = true;
+            }
+            else
+            {
+                CloseInventory();
+                BP_Open = false;
+            }
 
         }
 
 
         //R技能
-        if(Input.GetKeyDown(KeyCode.R))
+        if (Input.GetKeyDown(KeyCode.R))
         {
             SkillR();
 
@@ -105,8 +137,24 @@ public class RPG : MonoBehaviour
 
         }
 
-        #region 发射火球的方向
-        //Vector3 mousePos = Camera.main.ScreenToWord
+        #region 发射火球的方向/角色朝向
+
+        
+        Vector3 mouseWorldPos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+        mouseWorldPos.z = transform.position.z;
+        //角色翻转
+        if(mouseWorldPos.x < transform.position.x)
+        {
+            //鼠标在左侧 角色朝左
+            transform.localScale = new Vector3(-1,1,1);
+        }
+        else if(mouseWorldPos.x > transform.position.x)
+        {
+            //鼠标在右侧 角色朝右
+            transform.localScale = new Vector3(1,1,1);
+        }
+
+
 
 
 
@@ -126,10 +174,10 @@ public class RPG : MonoBehaviour
         rb.velocity = new Vector2(horizontalInput * characterStats.moveSpeed, rb.velocity.y);
        // Debug.Log("Horizontal Input: " + horizontalInput);
         //角色翻转
-        if (horizontalInput != 0)
-        {
-            sr.flipX = horizontalInput < 0;
-        }
+        //if (horizontalInput != 0)
+        //{
+        //    sr.flipX = horizontalInput < 0;
+        //}
         Debug.Log("行走");
     }
 
@@ -185,7 +233,7 @@ public class RPG : MonoBehaviour
 
          #region 轻攻击方法
          private void LightAttack()
-        {
+         {
             float currentCD = GetAttackCD();
             if(Time.time - lastLATime < currentCD)
              {
@@ -194,14 +242,20 @@ public class RPG : MonoBehaviour
              }
             lastLATime = Time.time;
             
+            //调用轻攻击
+            if(attackSystem != null)
+            {
+                attackSystem.isAttack(false);    
+
+            }
             Debug.Log($"释放轻攻击,当前攻速{characterStats.attackSpeed},剩余冷却时间：{currentCD}秒");
 
-        }
+          }
 
-        #endregion
+    #endregion
 
-        #region 重攻击方法
-        private void HeavyAttack()
+    #region 重攻击方法
+    private void HeavyAttack()
         {
             float currentCD = GetAttackCD();
             //检查攻击冷却
@@ -217,7 +271,8 @@ public class RPG : MonoBehaviour
                 return;
 
             }
-            characterStats.fireBallShot();
+
+            CreateFireBall();
 
             lastHATime = Time.time;
   
@@ -225,14 +280,15 @@ public class RPG : MonoBehaviour
             Debug.Log("效果拔群！");
         }
 
-         #endregion
+    #endregion
 
-     #endregion
+
+    #endregion
 
     #region 技能
 
-        #region 技能E
-        private void SkillE()
+    #region 技能E
+    private void SkillE()
         {
             Debug.Log("释放技能E");
 
@@ -253,14 +309,56 @@ public class RPG : MonoBehaviour
             Debug.Log("释放技能R");
 
         }
-        #endregion
+    #endregion
 
 
     #endregion
 
 
 
+    public void CreateFireBall()
+    {
+        //动态创建空物体
+        GameObject fireBallObj = new GameObject("FireBall");
+        //设置火球位置 玩家位置 
+        fireBallObj.transform.position = transform.position + new Vector3(0.5f * transform.localScale.x, 0.5f, 0);
+        //继承玩家的缩放（保证和玩家的朝向一致）再乘以一个系数
+        //float fireBallScale = Mathf.Abs(transform.localScale.x) * 0.1f;
+        fireBallObj.transform.localScale = transform.localScale;
+        //fireBallObj.transform.localScale = new Vector3(Mathf.Sign(transform.localScale.x) * fireBallScale,fireBallScale,1);
+
+        //贴图核心
+        SpriteRenderer sr = fireBallObj.AddComponent<SpriteRenderer>();
+        sr.sprite = fireBallSprite;//赋值拖入的火球脚本
+        sr.sortingOrder = 10;//贴图层级置顶，不被遮挡
 
 
+        FireBall fireBallScript = fireBallObj.AddComponent<FireBall>();
+
+    }
+
+
+    #region E交互背包
+    private void OpenInventory()
+    {
+        Debug.Log("打开背包");
+
+        if (bpExitScript != null)
+        {
+            bpExitScript.SlideInFromLeft(new Vector2(-305.5f, 0f));
+        }
+
+    }
+    private void CloseInventory()
+    {
+        Debug.Log("关闭背包");
+
+        if (bpExitScript != null)
+        {
+            bpExitScript.SlideOutToLeft();
+        }
+
+    }
+    #endregion
 
 }
