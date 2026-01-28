@@ -2,7 +2,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 [System.Serializable]
-[CreateAssetMenu(fileName = "新对话", menuName = "对话组",order =999)]
+[CreateAssetMenu(fileName = "新对话", menuName = "对话组")]
 public class ConversationGroup: ScriptableObject
 {
     public string GroupName;
