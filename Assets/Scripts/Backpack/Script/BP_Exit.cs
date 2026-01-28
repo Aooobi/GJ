@@ -3,6 +3,7 @@ using DG.Tweening;
 
 public class BP_Exit : MonoBehaviour
 {
+    public bool BP_Open;
     // 在Awake时将面板设置在摄像机左侧
     private void Awake()
     {
