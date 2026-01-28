@@ -58,8 +58,10 @@ public class CharacterStats : MonoBehaviour
     #region 基础数值
     [Header("生命")]
     //生命
-    public float maxHealth; 
+    public float maxHealth = 100f; 
     public float currentHealth;
+    public bool isDead { get; private set; }//是否阵亡 对外只读 对内可改
+    public event System.Action OnDeath; //阵亡事件（攻击系统/其他脚本可监听，触发死亡动画/销毁）
 
     //花火值
     [Header("花火值")]
@@ -126,6 +128,7 @@ public class CharacterStats : MonoBehaviour
     {
         currentHealth = maxHealth;
         currentSparks = maxSparks;
+        isDead = false;
 
         LAgrowTime = 0f;
         HAgrowTime = 0f;
@@ -422,21 +425,110 @@ public class CharacterStats : MonoBehaviour
     #endregion
 
 
-    //public void fireBallShot()
-    //{
-    //    if (fireBall != null && fireBallPoint != null)
-    //    {
-    //        GameObject fireball = Instantiate(fireBall, fireBallPoint.position, fireBallPoint.rotation);
-    //        Debug.Log("发射火球");
-    //    }
-    //    else
-    //    {
-    //        Debug.Log("没有火球子弹");
+    /// <summary>
+    /// 受伤逻辑
+    /// </summary>
+    /// <param name="damage"></param>
+    /// <param name="attacker"></param>
+    public void TakeDamage(float damage, GameObject attacker = null)
+    {
+        if(isDead)
+        {
+            Debug.Log($"{gameObject.name}已阵亡,无法收到伤害");
+            return;
+        }
+        //计算防御减免： 最终伤害 = 原始伤害 - 防御力
+        float finalDamage = Mathf.Max(1f, damage - Defense);
+        //扣除生命值
+        ChangeHealth(-finalDamage);
+        Debug.Log($"{gameObject.name}受到{finalDamage}点伤害(原始伤害{damage},防御力减免{Defense}),剩余血量{currentHealth}");
+        //检测是否阵亡
+        if(!isDead)
+        {
+            if(currentHealth <= 0)
+            {
+                Die(attacker);
+            }
 
-    //    }
+        }
+
+    }
+
+    /// <summary>
+    /// 阵亡处理
+    /// </summary>
+    /// <param name="attacker"></param>
+    private void Die(GameObject attacker = null)
+    {
+        isDead = true;
+        Debug.Log($"{gameObject}已阵亡 攻击者：{attacker?.name ?? "无"}");
+
+        //触发阵亡事件(供)
+        OnDeath?.Invoke();
+
+        //基础阵亡逻辑
+        DeathLogicByTag();
+
+    }
+
+    /// <summary>
+    /// 基础阵亡逻辑
+    /// </summary>
+    private void DeathLogicByTag()
+    { 
+        if(gameObject.CompareTag("Player"))
+        {
+            //玩家阵亡逻辑：停止移动 触发复活逻辑
+            Rigidbody2D rb = GetComponent<Rigidbody2D>();
+            if (rb != null)
+            {
+                rb.velocity = Vector2.zero;
+            }
+            Debug.Log("玩家阵亡！");
+            //之后来补充
 
 
-    //}
+        }
+        else if(gameObject.CompareTag("Monster"))
+        {
+            //怪物阵亡逻辑：停止移动  动画+销毁  + 掉落
+            Rigidbody2D rb = GetComponent<Rigidbody2D>();
+            if(rb != null)
+            {
+                rb.velocity = Vector2.zero;
+            }
+            Monsters monsterAI = GetComponent<Monsters>();
+            if (monsterAI != null)
+            {
+                monsterAI.enabled = false; //禁用怪物AI脚本
+            }
+
+            Debug.Log("怪物阵亡");
+            Destroy(gameObject,1f); //延迟销毁 方便放死亡动画
+
+            //之后来补充掉落逻辑
+        }
+
+    }
+
+    /// <summary>
+    /// 阵亡逻辑
+    /// </summary>
+    /// <param name="restoreHealthPercent"></param>
+    public void Revive(float restoreHealthPercent = 1f)
+    {
+        if(!isDead)
+        {
+            return;
+        }
+
+        isDead = false;
+        currentHealth = maxHealth * restoreHealthPercent;
+        Debug.Log("已复活");
+
+        //之后来补充复活逻辑 比如位置  动画等
+
+    }
 
 
 

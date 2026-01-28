@@ -8,6 +8,7 @@ using UnityEngine;
 public class RPG : MonoBehaviour
 {
     private CharacterStats characterStats;
+    private Attack attackSystem; //引用攻击脚本
     [Header("初始属性设置")]
     [SerializeField] private float initMoveSpeed = 1.0f;
     [SerializeField] private float initJumpHeight = 5.0f;
@@ -20,6 +21,9 @@ public class RPG : MonoBehaviour
 
     [Header("初始火球贴图")]
     [SerializeField] private Sprite fireBallSprite;
+
+    [Header("人物贴图")]
+    [SerializeField] private Sprite characterSprite;
 
 
 
@@ -37,6 +41,16 @@ public class RPG : MonoBehaviour
     {
         rb = GetComponent<Rigidbody2D>();
         sr = GetComponent<SpriteRenderer>();
+
+        if(characterSprite != null)
+        {
+            sr.sprite = characterSprite;
+
+        }
+        //float baseScale = 8f;
+        //transform.localScale = new Vector3(Mathf.Sign(transform.localScale.x) * baseScale, baseScale, 1);
+
+
 
         characterStats = GetComponent<CharacterStats>(); //把基础属性面板上的数值放进来
         if(characterStats == null)
@@ -205,7 +219,7 @@ public class RPG : MonoBehaviour
 
          #region 轻攻击方法
          private void LightAttack()
-        {
+         {
             float currentCD = GetAttackCD();
             if(Time.time - lastLATime < currentCD)
              {
@@ -214,14 +228,20 @@ public class RPG : MonoBehaviour
              }
             lastLATime = Time.time;
             
+            //调用轻攻击
+            if(attackSystem != null)
+            {
+                attackSystem.isAttack(false);    
+
+            }
             Debug.Log($"释放轻攻击,当前攻速{characterStats.attackSpeed},剩余冷却时间：{currentCD}秒");
 
-        }
+          }
 
-        #endregion
+    #endregion
 
-         #region 重攻击方法
-        private void HeavyAttack()
+    #region 重攻击方法
+    private void HeavyAttack()
         {
             float currentCD = GetAttackCD();
             //检查攻击冷却
@@ -288,8 +308,10 @@ public class RPG : MonoBehaviour
         GameObject fireBallObj = new GameObject("FireBall");
         //设置火球位置 玩家位置 
         fireBallObj.transform.position = transform.position + new Vector3(0.5f * transform.localScale.x, 0.5f, 0);
-        //继承玩家的缩放（保证和玩家的朝向一致）
+        //继承玩家的缩放（保证和玩家的朝向一致）再乘以一个系数
+        //float fireBallScale = Mathf.Abs(transform.localScale.x) * 0.1f;
         fireBallObj.transform.localScale = transform.localScale;
+        //fireBallObj.transform.localScale = new Vector3(Mathf.Sign(transform.localScale.x) * fireBallScale,fireBallScale,1);
 
         //贴图核心
         SpriteRenderer sr = fireBallObj.AddComponent<SpriteRenderer>();

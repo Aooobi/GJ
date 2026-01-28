@@ -13,6 +13,7 @@ public class Monsters : MonoBehaviour
     [SerializeField] private Transform place1;//起点
     [SerializeField] private Transform place2;//终点
     [SerializeField] private float moveSpeed =2f;
+    [SerializeField] private float monsterScale = 5f;//新增怪物基础缩放
     private Vector2 targetPoint;
 
     [Header("怪物追踪逻辑")]
@@ -22,6 +23,9 @@ public class Monsters : MonoBehaviour
     private bool isChasing = false;
     private float detectInterval = 0.2f;//检测间隔时间 避免每一帧检测 优化性能
     private float lastDetectTime; //上次检测时间
+
+    [Header("怪物贴图")]
+    [SerializeField] private Sprite monsterSprite;
 
 
     private CharacterStats monstersStats;
@@ -42,6 +46,13 @@ public class Monsters : MonoBehaviour
             return;
         }
 
+        if(monsterSprite != null)
+        {
+            sr.sprite = monsterSprite;
+
+        }
+
+
         player = GameObject.FindGameObjectWithTag("Player")?.transform;
         if (player == null)
         {
@@ -58,6 +69,9 @@ public class Monsters : MonoBehaviour
 
         //初始化检测时间
         lastDetectTime = Time.time;
+
+        //初始化朝向
+        transform.localScale = new Vector3(monsterScale,monsterScale,1);
 
     }
 
@@ -96,6 +110,10 @@ public class Monsters : MonoBehaviour
     {
         //方向
         Vector2 direction  = (targetPoint - (Vector2)transform.position).normalized;
+
+        //调用朝向反向
+        FilpMonster(direction.x);
+
         //移动
          rb.velocity = new Vector2(direction.x * moveSpeed , rb.velocity.y);
         
@@ -170,11 +188,31 @@ public class Monsters : MonoBehaviour
     {
         //计算方向
         Vector2 direction = (player.position - transform.position).normalized;
+
+        //调用朝向反向
+        FilpMonster(direction.x);
+
         //向玩家移动
         rb.velocity = new Vector2(direction.x * chaseSpeed , rb.velocity.y);
 
     }
 
+
+    #endregion
+
+    #region 朝向反向
+    private void FilpMonster(float moveDirectionX)
+    {
+        if(moveDirectionX == 0)
+        {
+            return;
+        }
+
+        //计算新的缩放： 保留y,z不变  x轴 = 方向*基础缩放
+        float newScaleX = Mathf.Sign(moveDirectionX) * monsterScale;
+        transform.localScale = new Vector3(newScaleX , monsterScale , 1);
+
+    }
 
     #endregion
 

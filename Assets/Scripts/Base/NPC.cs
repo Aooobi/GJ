@@ -11,11 +11,16 @@ public class NPC : MonoBehaviour
     [SerializeField] private float moveSpeed = 2f;
     [SerializeField] private Transform villageleft;
     [SerializeField] private Transform villageright;
+    [SerializeField] private float npcScale = 2f;//新增村民基础缩放
     private Vector2 targetPoint;
 
     [Header("玩家碰撞检测")]
     [SerializeField] private string playerTag = "Player";
     private bool isTouchingPlayer = false;
+
+    [Header("村民贴图")]
+    [SerializeField] private Sprite npcSprite;
+
 
     [Header("祭坛刷新")]
     [SerializeField] private Transform FreshPoint;
@@ -42,6 +47,13 @@ public class NPC : MonoBehaviour
             Debug.Log("NPC未挂载Rigidbody2D");
             return;
         }
+
+        if(npcSprite != null)
+        {
+            sr.sprite = npcSprite;
+
+        }
+
         if(FreshPoint == null)
         {
             Debug.Log("脚本未关联祭坛位置");
@@ -52,6 +64,9 @@ public class NPC : MonoBehaviour
     private void Start()
     {
         RandomPoint();
+
+        //初始化朝向
+        transform.localScale = new Vector3(npcScale, npcScale, 1);
 
     }
 
@@ -130,6 +145,10 @@ public class NPC : MonoBehaviour
 
         //计算方向
         Vector2 direction = (targetPoint - (Vector2)transform.position).normalized;
+
+        //朝向反向
+        FlipNPC(direction.x);
+
         //移动
         rb.velocity = new Vector2(direction.x * moveSpeed,rb.velocity.y);
         //重新随机目标点
@@ -194,5 +213,20 @@ public class NPC : MonoBehaviour
 
     #endregion
 
+    #region 朝向反向
+    private void FlipNPC(float DirectionX)
+    {
+        if(DirectionX == 0)
+        {
+            return;
+        }
+
+        float scaleX = Mathf.Sign(DirectionX) * npcScale;
+        transform.localScale = new Vector3( scaleX , npcScale , 1);
+
+    }
+
+
+    #endregion
 
 }
