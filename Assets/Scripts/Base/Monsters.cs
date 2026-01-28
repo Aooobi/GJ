@@ -45,7 +45,8 @@ public class Monsters : MonoBehaviour
     private Attack monsterAttack;//引用通用Attack脚本
 
     private float lastAttackTime;//上次攻击时间
-    
+
+    private Vector3 originalScale;//记录初始缩放 用于朝向反向
 
 
     private void Awake()
@@ -55,6 +56,8 @@ public class Monsters : MonoBehaviour
         sr = GetComponent<SpriteRenderer>();
         Physics2D.IgnoreLayerCollision(LayerMask.NameToLayer("Monster"), LayerMask.NameToLayer("Monster"), true);
         monsterAttack = GetComponent<Attack>();
+
+        originalScale = transform.localScale;
 
         if (monstersStats == null)
         {
@@ -93,10 +96,11 @@ public class Monsters : MonoBehaviour
         lastDetectTime = Time.time;
 
         //初始化朝向
-        transform.localScale = new Vector3(monsterScale, monsterScale, 1);
+        //transform.localScale = new Vector3(monsterScale, monsterScale, 1);
 
         //初始化攻击时间
         lastAttackTime = -attackCD;
+
     }
 
 
@@ -241,8 +245,8 @@ public class Monsters : MonoBehaviour
         }
 
         //计算新的缩放： 保留y,z不变  x轴 = 方向*基础缩放
-        float newScaleX = Mathf.Sign(moveDirectionX) * monsterScale;
-        transform.localScale = new Vector3(newScaleX, monsterScale, 1);
+        float newScaleX = Mathf.Sign(moveDirectionX) * originalScale.x;
+        transform.localScale = new Vector3(newScaleX, originalScale.y, 1);
 
     }
 
