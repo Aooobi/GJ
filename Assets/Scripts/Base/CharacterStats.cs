@@ -484,8 +484,13 @@ public class CharacterStats : MonoBehaviour
             {
                 rb.velocity = Vector2.zero;
             }
+            Destroy(gameObject, 0.5f); //延迟销毁 方便放死亡动画
             Debug.Log("玩家阵亡！");
             //之后来补充
+            
+
+
+
 
 
         }
