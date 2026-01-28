@@ -234,7 +234,7 @@ public class ConversationManager : MonoBehaviour
 
     }
 
-    public void EndConversation()
+    public void EndConversation(bool fade_or_not = false)
     {
         //直接隐藏对话面板
         BackgroundPanel.gameObject.SetActive(false);
@@ -242,16 +242,35 @@ public class ConversationManager : MonoBehaviour
         TopBar.DOFillAmount(0,0.5f).SetEase(Ease.Linear);
         BottomBar.DOFillAmount(0, 0.5f).SetEase(Ease.Linear);
         //对话结束 还是调用淡出淡入
-        UIFadeEffect.Instance.FadeOutAndFadeIn(() => {
+        if (fade_or_not)
+        {
+            UIFadeEffect.Instance.FadeOutAndFadeIn(() => {
+                //第一个形参 黑屏调用
+                currentIndex = -1;
+
+                //当前装载的对话组清空
+                currentConversation = null;
+                Content.text = string.Empty;
+                Name.text = string.Empty;
+
+                Debug.Log("对话结束");
+            }, null, true);
+        }
+        else
+        {
+            //false时不需要
+            //直接对话结束
             //第一个形参 黑屏调用
             currentIndex = -1;
-            
+
             //当前装载的对话组清空
             currentConversation = null;
             Content.text = string.Empty;
             Name.text = string.Empty;
-            
+
             Debug.Log("对话结束");
-        },null,true);//注意第三个参数为true infoPanel显示
+
+        }
+        //注意第三个参数为true infoPanel显示
     }
 }
