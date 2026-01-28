@@ -19,8 +19,10 @@ MonoBehaviour:
   - SpeakerName: "\u5F17\u6069"
     Content: "\u4F60\u6709\u4EC0\u4E48\u95EE\u9898\u5417\uFF1F"
   NextGroup:
-  - {fileID: 0}
+  - {fileID: 11400000, guid: 351be9f97d5b9e24fa187ad1b3a97657, type: 2}
+  - {fileID: 11400000, guid: 21eed690b2bc64643b1c65c36a533418, type: 2}
+  - {fileID: 11400000, guid: 299fd8e005d61ab4ebf340540bc30702, type: 2}
   NextGroupText:
   - "\u53D1\u751F\u4E86\u4EC0\u4E48\uFF1F"
-  - 
-  - 
+  - "\u4E3A\u4EC0\u4E48\u201C\u82B1\u706B\u201D\u4E5F\u80FD\u732E\u796D\uFF1F"
+  - "\u6CA1\u4E8B\u4E86"
