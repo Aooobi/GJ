@@ -69758,9 +69758,9 @@ GameObject:
   - component: {fileID: 1190885811}
   - component: {fileID: 1190885815}
   - component: {fileID: 1190885816}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Monster
-  m_TagString: Untagged
+  m_TagString: Monster
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -69939,8 +69939,6 @@ MonoBehaviour:
   baseAttackSpeed: 1
   attackSpeed: 0
   Defense: 0
-  fireBall: {fileID: 0}
-  fireBallPoint: {fileID: 0}
   nowRareLevel: 0
 --- !u!1 &1193948166
 GameObject:
@@ -70764,6 +70762,7 @@ MonoBehaviour:
   initJumpHeight: 5
   heavyAttackCost: 1
   baseAttackCD: 0.5
+  fireBallSprite: {fileID: 21300000, guid: 1c55256b49ed8d2458e46702e33cfc10, type: 3}
 --- !u!70 &1310700902
 CapsuleCollider2D:
   m_ObjectHideFlags: 0
@@ -70874,8 +70873,6 @@ MonoBehaviour:
   baseAttackSpeed: 1
   attackSpeed: 0
   Defense: 0
-  fireBall: {fileID: 0}
-  fireBallPoint: {fileID: 0}
   nowRareLevel: 0
 --- !u!1 &1374626396
 GameObject:

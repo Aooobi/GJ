@@ -18,6 +18,9 @@ public class RPG : MonoBehaviour
     private float lastLATime;
     private float lastHATime;
 
+    [Header("初始火球贴图")]
+    [SerializeField] private Sprite fireBallSprite;
+
 
 
     //组件引用 2d？
@@ -106,8 +109,24 @@ public class RPG : MonoBehaviour
 
         }
 
-        #region 发射火球的方向
-        //Vector3 mousePos = Camera.main.ScreenToWord
+        #region 发射火球的方向/角色朝向
+
+        
+        Vector3 mouseWorldPos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+        mouseWorldPos.z = transform.position.z;
+        //角色翻转
+        if(mouseWorldPos.x < transform.position.x)
+        {
+            //鼠标在左侧 角色朝左
+            transform.localScale = new Vector3(-1,1,1);
+        }
+        else if(mouseWorldPos.x > transform.position.x)
+        {
+            //鼠标在右侧 角色朝右
+            transform.localScale = new Vector3(1,1,1);
+        }
+
+
 
 
 
@@ -201,7 +220,7 @@ public class RPG : MonoBehaviour
 
         #endregion
 
-        #region 重攻击方法
+         #region 重攻击方法
         private void HeavyAttack()
         {
             float currentCD = GetAttackCD();
@@ -218,7 +237,8 @@ public class RPG : MonoBehaviour
                 return;
 
             }
-            characterStats.fireBallShot();
+
+            CreateFireBall();
 
             lastHATime = Time.time;
   
@@ -226,14 +246,15 @@ public class RPG : MonoBehaviour
             Debug.Log("效果拔群！");
         }
 
-         #endregion
+    #endregion
 
-     #endregion
+
+    #endregion
 
     #region 技能
 
-        #region 技能E
-        private void SkillE()
+    #region 技能E
+    private void SkillE()
         {
             Debug.Log("释放技能E");
 
@@ -254,14 +275,31 @@ public class RPG : MonoBehaviour
             Debug.Log("释放技能R");
 
         }
-        #endregion
+    #endregion
 
 
     #endregion
 
 
 
+    public void CreateFireBall()
+    {
+        //动态创建空物体
+        GameObject fireBallObj = new GameObject("FireBall");
+        //设置火球位置 玩家位置 
+        fireBallObj.transform.position = transform.position + new Vector3(0.5f * transform.localScale.x, 0.5f, 0);
+        //继承玩家的缩放（保证和玩家的朝向一致）
+        fireBallObj.transform.localScale = transform.localScale;
 
+        //贴图核心
+        SpriteRenderer sr = fireBallObj.AddComponent<SpriteRenderer>();
+        sr.sprite = fireBallSprite;//赋值拖入的火球脚本
+        sr.sortingOrder = 10;//贴图层级置顶，不被遮挡
+
+
+        FireBall fireBallScript = fireBallObj.AddComponent<FireBall>();
+
+    }
 
 
 }
