@@ -19,6 +19,6 @@ MonoBehaviour:
   - SpeakerName: 
     Content: "\u8FD9\u662F\u4EC0\u4E48\uFF1F"
   - SpeakerName: 
-    Content: "\u4E00\u9897\u6E29\u6696\u7684...\u706B\u82B1\uFF1F"
+    Content: "\u4E00\u9897...\u706B\u82B1\uFF1F"
   NextGroup: []
   NextGroupText: []
