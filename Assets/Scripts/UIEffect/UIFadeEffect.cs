@@ -12,7 +12,7 @@ public class UIFadeEffect : MonoBehaviour
     [Header("黑屏图片")]
     public Image Black;
     [Header("时间参数")]
-    [SerializeField]private float fade_duration = 1f;
+    [SerializeField] private float fade_duration = 1f;
     [SerializeField] private float stop_duration = 1f;
 
     [Header("需要显隐控制的面板")]
