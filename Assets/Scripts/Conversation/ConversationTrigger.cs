@@ -12,6 +12,12 @@ public class ConversationTrigger : MonoBehaviour
         if (collision.CompareTag("Player"))
         {
             ConversationManager.instance.LoadConversationByName(conveName, black_or_not);
+        }
+    }
+    private void OnTriggerExit2D(Collider2D collision)
+    {
+        if (collision.CompareTag("Player"))
+        {
             if (isOnce)
             {
                 Destroy(this.gameObject);
