@@ -11,4 +11,9 @@ public class ConversationGroup: ScriptableObject
     //指向下一个对话组 可以有多个选项
     public List<ConversationGroup> NextGroup = new List<ConversationGroup>();
     public List<string> NextGroupText = new List<string>();
+
+    private void OnValidate()
+    {
+        GroupName = this.name;
+    }
 }

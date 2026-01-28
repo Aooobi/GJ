@@ -1,0 +1,28 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: cf220b45eac5b0c40ba93669d26e115c, type: 3}
+  m_Name: "\u4E00\u5C42-\u4E0E\u521D\u5BF9\u8BDD"
+  m_EditorClassIdentifier: 
+  GroupName: "\u4E00\u5C42-\u4E0E\u521D\u5BF9\u8BDD"
+  Conversations:
+  - SpeakerName: "\u521D"
+    Content: "\u4ECA\u5929\u7684\u82B1\u74E3\u5DF2\u7ECF\u51C6\u5907\u597D\u4E86\u3002\u8BB0\u4F4F\uFF0C\u795E\u50CF\u7684\u6069\u8D50\u4E0D\u662F\u65E0\u9650\u7684\uFF0C\u8981\u73CD\u60DC\u4F7F\u7528\u3002"
+  - SpeakerName: "\u521D"
+    Content: "\u600E\u4E48\uFF0C\u6709\u4EC0\u4E48\u4E8B\u5417\uFF1F"
+  NextGroup:
+  - {fileID: 11400000, guid: 140e83d69fa80eb40995f63d22f1181c, type: 2}
+  - {fileID: 11400000, guid: 4d0871a52a939fd46b98a6c4e5d6c535, type: 2}
+  - {fileID: 11400000, guid: cf869fe32a0c3ec4eac84c930b929297, type: 2}
+  NextGroupText:
+  - "\u4EC0\u4E48\u662F\u706B\u7130\u82B1"
+  - "\u82B1\u74E3\u771F\u7684\u80FD\u6362\u4E1C\u897F\u5417\uFF1F"
+  - "\u6CA1\u4E8B\u4E86"

@@ -1,3 +1,4 @@
+using DG.Tweening;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
@@ -52,9 +53,9 @@ public class MessagePool : MonoBehaviour
 
         //≤‚ ‘
         //CreateMessage("Welcome to the Message System!", Color.green);
-        CreateMessage("Welcome to the Message System!", Color.green);
-        CreateMessage("Welcome to the Message System!", Color.red);
-        CreateMessage("Welcome to the Message System!", Color.yellow);
+        //CreateMessage("Welcome to the Message System!", Color.green);
+        //CreateMessage("Welcome to the Message System!", Color.red);
+        //CreateMessage("Welcome to the Message System!", Color.yellow);
 
     }
 
