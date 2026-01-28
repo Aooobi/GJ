@@ -99,6 +99,7 @@ public class RPG : MonoBehaviour
 		moveInput = Input.GetAxisRaw("Horizontal");
 
         if (moveInput == 0) {
+			anim.ResetTrigger("move");
 			anim.SetBool("isWalking", false);
 		}
 		else {
