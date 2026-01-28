@@ -62,7 +62,7 @@ public class ConversationManager : MonoBehaviour
             AllConversation.Add(convo);
         }
 
-        LoadConversationByName("测试对话1");
+        //LoadConversationByName("测试对话1");
     }
 
     public void StartConversation(bool fade_or_not = false)
