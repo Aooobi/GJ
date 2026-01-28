@@ -9,7 +9,18 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: a8a5db91ff9206c489ae15e206bd2223, type: 3}
-  m_Name: PlayerBag
+  m_Script: {fileID: 11500000, guid: 884f397e44b919547b288d0c21afb7a9, type: 3}
+  m_Name: Test3
   m_EditorClassIdentifier: 
-  itemList: []
+  id: 
+  name: 
+  icon: {fileID: 0}
+  description: 
+  maxStack: 1
+  itemHeld: 0
+  itemType: 0
+  additionalData: {fileID: 0}
+  functionScript: {fileID: 0}
+  damage: 0
+  health: 0
+  function: 

@@ -17,11 +17,18 @@ public class ItemOnWorld : MonoBehaviour
     public void AddNewItem() {
         if (!playerBackPack.itemList.Contains(item)) {
             playerBackPack.itemList.Add(item);
-            BPManager.CreateNewItem(item);
+            // BPManager.CreateNewItem(item);
         }
         else
         {
-            item.itemHeld += 1;
+            if (item.itemHeld < item.maxStack) {
+                item.itemHeld += 1;
+            }
+            else {
+                print("物品已满");
+            }
         }
+        
+        BPManager.RefreshItem();
     }
 }

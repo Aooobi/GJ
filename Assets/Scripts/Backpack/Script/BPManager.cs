@@ -18,8 +18,11 @@ public class BPManager : MonoBehaviour
         instance = this;
     }
 
-    public static void CreateNewItem(ItemBase item)
-    {
+    private void Onenable() {
+        RefreshItem();
+    }
+
+    public static void CreateNewItem(ItemBase item) {
         Slot newItem = Instantiate(instance.gridPrefab, instance.slotGrid.transform.position, Quaternion.identity);
         newItem.gameObject.transform.SetParent(instance.slotGrid.transform);
         //重置本地变换，让布局组控制器来决定其位置和大小
@@ -30,5 +33,16 @@ public class BPManager : MonoBehaviour
         newItem.itemOnslot = item;
         newItem.slotImage.sprite = item.icon;
         newItem.Number.text = item.itemHeld.ToString();
+    }
+
+    public static void RefreshItem() {
+        for (int i = 0; i < instance.slotGrid.transform.childCount; i++) {
+            if (instance.slotGrid.transform.childCount == 0) break;
+            Destroy(instance.slotGrid.transform.GetChild(i).gameObject);
+        }
+
+        for (int i = 0; i < instance.Bag.itemList.Count; i++) {
+            CreateNewItem(instance.Bag.itemList[i]);
+        }
     }
 }
