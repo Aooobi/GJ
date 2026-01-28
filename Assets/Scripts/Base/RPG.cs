@@ -32,12 +32,6 @@ public class RPG : MonoBehaviour
     [Header("人物贴图")]
     [SerializeField] private Sprite characterSprite;
 
-    [Header("背包")]
-    [SerializeField] private GameObject backpackPanel;
-    private BP_Exit bpExitScript;
-
-    private bool BP_Open = false;
-
 
     //组件引用 2d？
     private Rigidbody2D rb; //2d刚体
@@ -375,29 +369,5 @@ public class RPG : MonoBehaviour
         FireBall fireBallScript = fireBallObj.AddComponent<FireBall>();
 
     }
-
-
-    #region E交互背包
-    private void OpenInventory()
-    {
-        Debug.Log("打开背包");
-
-        if (bpExitScript != null)
-        {
-            bpExitScript.SlideInFromLeft(new Vector2(-305.5f, 0f));
-        }
-
-    }
-    private void CloseInventory()
-    {
-        Debug.Log("关闭背包");
-
-        if (bpExitScript != null)
-        {
-            bpExitScript.SlideOutToLeft();
-        }
-
-    }
-    #endregion
 
 }
