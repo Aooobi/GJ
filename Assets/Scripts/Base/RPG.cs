@@ -25,6 +25,11 @@ public class RPG : MonoBehaviour
     [Header("人物贴图")]
     [SerializeField] private Sprite characterSprite;
 
+    [Header("背包")]
+    [SerializeField] private GameObject backpackPanel;
+    private BP_Exit bpExitScript;
+
+    private bool BP_Open = false;
 
 
     //组件引用 2d？
@@ -102,15 +107,24 @@ public class RPG : MonoBehaviour
         }
 
         //E技能
-        if(Input.GetKeyDown(KeyCode.E))
+        if (Input.GetKeyDown(KeyCode.E))
         {
-            SkillE();
+            if (BP_Open == false)
+            {
+                OpenInventory();
+                BP_Open = true;
+            }
+            else
+            {
+                CloseInventory();
+                BP_Open = false;
+            }
 
         }
 
 
         //R技能
-        if(Input.GetKeyDown(KeyCode.R))
+        if (Input.GetKeyDown(KeyCode.R))
         {
             SkillR();
 
@@ -323,5 +337,28 @@ public class RPG : MonoBehaviour
 
     }
 
+
+    #region E交互背包
+    private void OpenInventory()
+    {
+        Debug.Log("打开背包");
+
+        if (bpExitScript != null)
+        {
+            bpExitScript.SlideInFromLeft(new Vector2(-305.5f, 0f));
+        }
+
+    }
+    private void CloseInventory()
+    {
+        Debug.Log("关闭背包");
+
+        if (bpExitScript != null)
+        {
+            bpExitScript.SlideOutToLeft();
+        }
+
+    }
+    #endregion
 
 }

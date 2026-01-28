@@ -24,6 +24,11 @@ public class Monsters : MonoBehaviour
     private float detectInterval = 0.2f;//检测间隔时间 避免每一帧检测 优化性能
     private float lastDetectTime; //上次检测时间
 
+    [Header("怪物攻击逻辑")]
+    [SerializeField] private float attackRange = 1.5f;//攻击范围
+
+
+
     [Header("怪物贴图")]
     [SerializeField] private Sprite monsterSprite;
 
