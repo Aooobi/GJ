@@ -148,7 +148,7 @@ public class NPC : MonoBehaviour
 
         //朝向反向
         FlipNPC(direction.x);
-
+        
         //移动
         rb.velocity = new Vector2(direction.x * moveSpeed,rb.velocity.y);
         //重新随机目标点

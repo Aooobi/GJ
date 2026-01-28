@@ -507,6 +507,15 @@ public class CharacterStats : MonoBehaviour
             {
                 monsterAI.enabled = false; //禁用怪物AI脚本
             }
+            else
+            {
+                Debug.LogWarning($"{gameObject.name}：未挂载Monsters脚本，跳过AI禁用");
+            }
+            SpriteRenderer sr = GetComponent<SpriteRenderer>();
+            if (sr != null)
+            {
+                sr.enabled = false;
+            }
 
             Debug.Log("怪物阵亡");
             Destroy(gameObject,1f); //延迟销毁 方便放死亡动画
