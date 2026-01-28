@@ -23,6 +23,10 @@ public class BPManager : MonoBehaviour
         instance.itemInfo.text = "";
     }
 
+    public static void ReSetBP() {
+        instance.Bag.itemList.Clear();
+    }
+
     public static void UpdateItemInfo(string info) {
         instance.itemInfo.text = info;
     }
