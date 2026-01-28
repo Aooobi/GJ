@@ -4,7 +4,7 @@ using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
-public class Slot : MonoBehaviour, IPointerClickHandler
+public class QuickBar_Slot : MonoBehaviour, IPointerClickHandler
 {
     public ItemBase itemOnslot;
     public Image slotImage;
@@ -77,7 +77,7 @@ public class Slot : MonoBehaviour, IPointerClickHandler
             {
                 if (button.GetComponentInChildren<Text>()?.text == "移动到快捷栏")
                 {
-                    button.onClick.AddListener(MoveToQuickBar);
+                    button.onClick.AddListener(MoveToBP);
                 }
             }
         }
@@ -155,7 +155,7 @@ private void CreateAndShowContextMenu(Vector2 mousePosition, RectTransform canva
     GameObject moveTextGO = new GameObject("ButtonText");
     moveTextGO.transform.SetParent(moveButtonGO.transform, false);
     Text moveText = moveTextGO.AddComponent<UnityEngine.UI.Text>();
-    moveText.text = "移动到快捷栏";
+    moveText.text = "放回背包";
     moveText.color = Color.white;
     moveText.fontSize = 14;
     moveText.alignment = TextAnchor.MiddleCenter;
@@ -174,7 +174,7 @@ private void CreateAndShowContextMenu(Vector2 mousePosition, RectTransform canva
     moveTextRect.offsetMax = Vector2.zero;
 
     // 添加点击事件
-    moveButton.onClick.AddListener(MoveToQuickBar);
+    moveButton.onClick.AddListener(MoveToBP);
 
     // === 按钮2: 关闭菜单 ===
     GameObject closeButtonGO = new GameObject("CloseButton");
@@ -272,14 +272,14 @@ private void CreateAndShowContextMenu(Vector2 mousePosition, RectTransform canva
     }
 
     // 移动到快捷栏的逻辑
-    private void MoveToQuickBar()
+    private void MoveToBP()
     {
         if (itemOnslot != null)
         {
-            Debug.Log("移动物品 " + itemOnslot.name + " 到快捷栏");
+            Debug.Log("移动物品 " + itemOnslot.name + " 到背包");
             // 在这里实现移动到快捷栏的具体逻辑
             // 例如：发送事件、调用管理器方法等
-            QuickBarManager.AddItemToQuickBar(itemOnslot);
+            QuickBarManager.RemoveItemFromQuickBar(itemOnslot);
         }
         else
         {
