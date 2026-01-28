@@ -286,7 +286,9 @@ MonoBehaviour:
   moveSpeed: 2
   villageleft: {fileID: 1963793183}
   villageright: {fileID: 1544612579}
+  npcScale: 5
   playerTag: Player
+  npcSprite: {fileID: 0}
   FreshPoint: {fileID: 0}
   textPrefab: {fileID: 0}
   mainCanvas: {fileID: 0}
@@ -1660,7 +1662,9 @@ MonoBehaviour:
   moveSpeed: 2
   villageleft: {fileID: 1963793183}
   villageright: {fileID: 1544612579}
+  npcScale: 5
   playerTag: Player
+  npcSprite: {fileID: 21300000, guid: bc7668dd774c40d4490aa61df73c4295, type: 3}
   FreshPoint: {fileID: 1070882742}
   textPrefab: {fileID: 229253312}
   mainCanvas: {fileID: 1304712778}
@@ -69909,9 +69913,11 @@ MonoBehaviour:
   place1: {fileID: 968150749}
   place2: {fileID: 1882592111}
   moveSpeed: 2
+  monsterScale: 5
   chaseRange: 5
   chaseSpeed: 3
   chaseBuffer: 1
+  monsterSprite: {fileID: 21300000, guid: cafaf91b0ba2b3342b1017552fac2c55, type: 3}
 --- !u!114 &1190885816
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -69924,8 +69930,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b21d302bc7887e147aacf9d875f42c13, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  maxHealth: 0
-  currentHealth: 0
+  maxHealth: 10
+  currentHealth: 10
   maxSparks: 3
   currentSparks: 3
   baseMoveSpeed: 5
@@ -70763,6 +70769,7 @@ MonoBehaviour:
   heavyAttackCost: 1
   baseAttackCD: 0.5
   fireBallSprite: {fileID: 21300000, guid: 1c55256b49ed8d2458e46702e33cfc10, type: 3}
+  characterSprite: {fileID: 21300000, guid: 62c0214d451cbe440bb38291ac855d13, type: 3}
 --- !u!70 &1310700902
 CapsuleCollider2D:
   m_ObjectHideFlags: 0
@@ -70866,8 +70873,8 @@ MonoBehaviour:
   moveSpeed: 0
   baseJumpHeight: 10
   jumpHeight: 0
-  baseLightAttack: 0
-  baseHeavyAttack: 0
+  baseLightAttack: 10
+  baseHeavyAttack: 20
   lightAttack: 0
   heavyAttack: 0
   baseAttackSpeed: 1
