@@ -85,4 +85,27 @@ public class UIFadeEffect : MonoBehaviour
             });
         });
     }
+
+    public void FadeOutAndFadeIn(float stopblack_duration,Action on_black, Action on_complete = null, bool active_panel_on_end = true)
+    {
+        if (on_black == null) return;
+        if (TargetPanel != null)
+            TargetPanel.gameObject.SetActive(false);
+        Black.DOFade(1, fade_duration).SetEase(Ease.Linear).OnComplete(() =>
+        {
+            on_black?.Invoke();
+
+            transform.DOMove(transform.position, stopblack_duration).OnComplete(() =>
+            {
+                Black.DOFade(0, fade_duration).SetEase(Ease.Linear).OnComplete(() =>
+                {
+                    if (TargetPanel != null)
+                        TargetPanel.gameObject.SetActive(active_panel_on_end);
+                    //结束委托调用
+                    on_complete?.Invoke();
+                });
+
+            });
+        });
+    }
 }

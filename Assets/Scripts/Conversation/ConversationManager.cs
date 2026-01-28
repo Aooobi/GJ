@@ -214,12 +214,7 @@ public class ConversationManager : MonoBehaviour
     /// <param name="conversationUnits"></param>
     public void LoadConversationByName(string conversationName,bool black_or_not = false)
     {
-        if (!BackgroundPanel.gameObject.activeInHierarchy)
-        {
-            BackgroundPanel.gameObject.SetActive(true);
-        }
-
-
+       
         for (int i = 0; i < AllConversation.Count; i++)
         {
             //找到对应名字的对话组
