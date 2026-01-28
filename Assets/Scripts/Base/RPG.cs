@@ -25,6 +25,8 @@ public class RPG : MonoBehaviour
 
     private bool BP_Open = false;
 
+    private Animator anim;
+
 
     [Header("初始火球贴图")]
     [SerializeField] private Sprite fireBallSprite;
@@ -40,6 +42,7 @@ public class RPG : MonoBehaviour
     //状态变量
     private bool isGrounded; //区分跳跃和行走 //注意之后tag问题
     private float horizontalInput;
+    private float moveInput; //动画判断组件
 
 
     //设置初始值，初始化
@@ -87,18 +90,35 @@ public class RPG : MonoBehaviour
 
     private void Start()
     {
-        
+        anim = GetComponent<Animator>();
     }
 
     private void Update()
     {
         horizontalInput = Input.GetAxis("Horizontal"); //-1左 0不动 1右
+		moveInput = Input.GetAxisRaw("Horizontal");
+
+        if (moveInput == 0) {
+			anim.SetBool("isWalking", false);
+		}
+		else {
+			anim.SetTrigger("move");
+			//根据玩家速度属性判断走还是跑，逻辑等待实现
+			//
+			//
+			//根据玩家速度属性判断走还是跑，逻辑等待实现
+			anim.SetBool("isWalking", true);
+		}
 
         //跳跃
         if(Input.GetKeyDown(KeyCode.Space))
         {
-            if(isGrounded)
-             Jump();
+            if(isGrounded) {
+				Jump();
+				anim.SetTrigger("Jump");
+				anim.SetBool("isJumping", true);
+			}
+			
 
         }
 

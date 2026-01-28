@@ -11,6 +11,12 @@ public class BPEvent : MonoBehaviour
 
     void Awake()
     {
+        // 防止重复创建
+        if (Instance != null && Instance != this)
+        {
+            Destroy(gameObject);
+            return;
+        }
         Instance = this;
         DontDestroyOnLoad(gameObject);
     }
