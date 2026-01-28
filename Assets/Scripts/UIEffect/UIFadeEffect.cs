@@ -43,6 +43,15 @@ public class UIFadeEffect : MonoBehaviour
         TargetPanel.gameObject.SetActive(false);
         Black.DOFade(1, fade_duration).SetEase(Ease.Linear);
     }
+
+    public void FadeOut(Action on_fade_out)
+    {
+        TargetPanel.gameObject.SetActive(false);
+        Black.DOFade(1, fade_duration).SetEase(Ease.Linear).OnComplete(() =>
+        {
+            on_fade_out?.Invoke();
+        });
+    }
     //淡入屏幕渐亮 单次方法
     public void FadeIn()
     {
