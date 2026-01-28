@@ -101,7 +101,6 @@ public class ConversationManager : MonoBehaviour
             TopBar.DOFillAmount(1, 0.5f).SetEase(Ease.Linear);
             BottomBar.DOFillAmount(1, 0.5f).SetEase(Ease.Linear);
 
-            //第二个形参 淡入淡出结束调用
             //开始对话
             currentIndex = 0;
             BackgroundPanel.gameObject.SetActive(true);
