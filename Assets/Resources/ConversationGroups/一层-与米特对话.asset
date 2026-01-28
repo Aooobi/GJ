@@ -1,0 +1,20 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: cf220b45eac5b0c40ba93669d26e115c, type: 3}
+  m_Name: "\u4E00\u5C42-\u4E0E\u7C73\u7279\u5BF9\u8BDD"
+  m_EditorClassIdentifier: 
+  GroupName: "\u4E00\u5C42-\u4E0E\u7C73\u7279\u5BF9\u8BDD"
+  Conversations:
+  - SpeakerName: "\u7C73\u7279"
+    Content: "\u52A0\u91CC\u5C14\u8BF4\u4F60\u5728\u6CBC\u6CFD\u5730\u8FDB\u6B65\u5F88\u5FEB\u3002\u4F46\u8981\u6CE8\u610F\uFF0C\u8D8A\u6DF1\u5904\u7684\u602A\u7269\u8D8A\u5F3A\u3002"
+  NextGroup: []
+  NextGroupText: []
