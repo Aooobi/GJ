@@ -5,7 +5,7 @@ using UnityEditor;
 public class ItemBaseEditor : Editor {
 
     private SerializedObject itemObject;//序列化对象
-    private SerializedProperty id, nameProp, icon, description, maxStack, itemType, damage, health, function, additionalData, functionScript;//定义各种属性
+    private SerializedProperty id, nameProp, icon, description, maxStack, itemHeld, itemType, damage, health, function, additionalData, functionScript;//定义各种属性
 
     void OnEnable()
     {
@@ -15,6 +15,7 @@ public class ItemBaseEditor : Editor {
         icon = itemObject.FindProperty("icon");
         description = itemObject.FindProperty("description");
         maxStack = itemObject.FindProperty("maxStack");
+        itemHeld = itemObject.FindProperty("itemHeld");
         itemType = itemObject.FindProperty("itemType");
         damage = itemObject.FindProperty("damage");
         health = itemObject.FindProperty("health");
@@ -32,6 +33,7 @@ public class ItemBaseEditor : Editor {
         EditorGUILayout.PropertyField(icon, new GUIContent("物品图标"));
         EditorGUILayout.PropertyField(description, new GUIContent("物品描述"));
         EditorGUILayout.PropertyField(maxStack, new GUIContent("堆叠数量"));
+        EditorGUILayout.PropertyField(itemHeld, new GUIContent("物品持有数"));
         EditorGUILayout.PropertyField(additionalData, new GUIContent("附加数据"));
         EditorGUILayout.PropertyField(functionScript, new GUIContent("功能脚本"));
         EditorGUILayout.PropertyField(itemType, new GUIContent("物品类型"));

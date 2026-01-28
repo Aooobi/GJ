@@ -18,18 +18,19 @@ public class RPG : MonoBehaviour
     [SerializeField] private float baseAttackCD = 0.5f;
     private float lastLATime;
     private float lastHATime;
+    
+    [Header("背包")]
+    [SerializeField] private GameObject backpackPanel;
+    private BP_Exit bpExitScript;
+
+    private bool BP_Open = false;
+
 
     [Header("初始火球贴图")]
     [SerializeField] private Sprite fireBallSprite;
 
     [Header("人物贴图")]
     [SerializeField] private Sprite characterSprite;
-
-    [Header("背包")]
-    [SerializeField] private GameObject backpackPanel;
-    private BP_Exit bpExitScript;
-
-    private bool BP_Open = false;
 
 
     //组件引用 2d？
@@ -73,7 +74,17 @@ public class RPG : MonoBehaviour
 
         lastLATime = -baseAttackCD;
         lastHATime = -baseAttackCD;
+        
+        
+        // 获取背包面板上的BP_Exit脚本
+        if(backpackPanel != null)
+        {
+            bpExitScript = backpackPanel.GetComponent<BP_Exit>();
+        }
+
+        BPEvent.Instance.OnInventoryStateChanged.AddListener(OnInventoryStateChange);
     }
+
     private void Start()
     {
         
@@ -109,13 +120,10 @@ public class RPG : MonoBehaviour
         //E技能
         if (Input.GetKeyDown(KeyCode.E))
         {
-            if (BP_Open == false)
-            {
+            if (BP_Open == false) {
                 OpenInventory();
                 BP_Open = true;
-            }
-            else
-            {
+            } else {
                 CloseInventory();
                 BP_Open = false;
             }
@@ -287,13 +295,38 @@ public class RPG : MonoBehaviour
 
     #region 技能
 
-    #region 技能E
-    private void SkillE()
-        {
-            Debug.Log("释放技能E");
+    #region E交互背包
+    private void OpenInventory()
+    {
+        Debug.Log("打开背包");
 
+        if(bpExitScript != null)
+        {
+            bpExitScript.SlideInFromLeft(new Vector2(-305.5f,0f));
+			BPEvent.Instance.OnInventoryStateChanged.Invoke(BP_Open);
         }
-        #endregion
+
+    }
+    private void CloseInventory()
+    {
+        Debug.Log("关闭背包");
+
+        if(bpExitScript != null)
+        {
+            bpExitScript.SlideOutToLeft();
+			BPEvent.Instance.OnInventoryStateChanged.Invoke(BP_Open);
+        }
+
+    }
+
+    private void OnInventoryStateChange(bool newState)
+    {
+        BP_Open = newState;
+        // 可选：这里可以加额外逻辑，比如背包关闭时恢复玩家移动
+        // PlayerCanMove = !newState;
+    }
+
+    #endregion
 
         #region 技能F
         private void SkillF()
@@ -336,29 +369,5 @@ public class RPG : MonoBehaviour
         FireBall fireBallScript = fireBallObj.AddComponent<FireBall>();
 
     }
-
-
-    #region E交互背包
-    private void OpenInventory()
-    {
-        Debug.Log("打开背包");
-
-        if (bpExitScript != null)
-        {
-            bpExitScript.SlideInFromLeft(new Vector2(-305.5f, 0f));
-        }
-
-    }
-    private void CloseInventory()
-    {
-        Debug.Log("关闭背包");
-
-        if (bpExitScript != null)
-        {
-            bpExitScript.SlideOutToLeft();
-        }
-
-    }
-    #endregion
 
 }
