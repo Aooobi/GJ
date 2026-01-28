@@ -12,12 +12,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 884f397e44b919547b288d0c21afb7a9, type: 3}
   m_Name: Test3
   m_EditorClassIdentifier: 
-  id: 
-  name: 
-  icon: {fileID: 0}
-  description: 
-  maxStack: 1
-  itemHeld: 0
+  id: Tset_3
+  name: qwe
+  icon: {fileID: 21300000, guid: 678a0ad4be47340d49403da6b930716c, type: 3}
+  description: test
+  maxStack: 5
+  itemHeld: 2
   itemType: 0
   additionalData: {fileID: 0}
   functionScript: {fileID: 0}

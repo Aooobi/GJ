@@ -65,7 +65,10 @@ public class RPG : MonoBehaviour
         {
             bpExitScript = backpackPanel.GetComponent<BP_Exit>();
         }
+
+        BPEvent.Instance.OnInventoryStateChanged.AddListener(OnInventoryStateChange);
     }
+
     private void Start()
     {
         
@@ -260,6 +263,7 @@ public class RPG : MonoBehaviour
         if(bpExitScript != null)
         {
             bpExitScript.SlideInFromLeft(new Vector2(-305.5f,0f));
+			BPEvent.Instance.OnInventoryStateChanged.Invoke(BP_Open);
         }
 
     }
@@ -270,9 +274,18 @@ public class RPG : MonoBehaviour
         if(bpExitScript != null)
         {
             bpExitScript.SlideOutToLeft();
+			BPEvent.Instance.OnInventoryStateChanged.Invoke(BP_Open);
         }
 
     }
+
+    private void OnInventoryStateChange(bool newState)
+    {
+        BP_Open = newState;
+        // 可选：这里可以加额外逻辑，比如背包关闭时恢复玩家移动
+        // PlayerCanMove = !newState;
+    }
+
     #endregion
 
         #region 技能F

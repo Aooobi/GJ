@@ -10,6 +10,7 @@ public class BP_Exit : MonoBehaviour
         // 将面板初始位置设为屏幕左侧外
         // rect.anchoredPosition = new Vector2(-Screen.width, rect.anchoredPosition.y);
         rect.anchoredPosition = new Vector2(-680f,0f);
+        BPEvent.Instance.OnInventoryStateChanged.AddListener(OnInventoryStateChange);
     }
 
     // 滑入视图（从左侧滑入到指定位置）
@@ -48,6 +49,7 @@ public class BP_Exit : MonoBehaviour
     public void SlideOutToLeft()
     {
         SlideOutToPosition(new Vector2(-680f,0f));
+        BPEvent.Instance.OnInventoryStateChanged.Invoke(false);
     }
 
     // 淡出并销毁
@@ -70,5 +72,12 @@ public class BP_Exit : MonoBehaviour
             {
                 gameObject.SetActive(false);
             });
+    }
+    
+    private void OnInventoryStateChange(bool newState)
+    {
+        BP_Open = newState;
+        // 可选：这里可以加额外逻辑，比如背包关闭时恢复玩家移动
+        // PlayerCanMove = !newState;
     }
 }

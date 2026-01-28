@@ -18,8 +18,13 @@ public class BPManager : MonoBehaviour
         instance = this;
     }
 
-    private void Onenable() {
+    private void OnEnable() {
         RefreshItem();
+        instance.itemInfo.text = "";
+    }
+
+    public static void UpdateItemInfo(string info) {
+        instance.itemInfo.text = info;
     }
 
     public static void CreateNewItem(ItemBase item) {
