@@ -116,7 +116,13 @@ public class RPG : MonoBehaviour
             if(isGrounded) {
 				Jump();
 				anim.SetTrigger("Jump");
+			}
+
+            if(!isGrounded) {
 				anim.SetBool("isJumping", true);
+			}
+			else {
+				anim.SetBool("isJumping", false);
 			}
 			
 
