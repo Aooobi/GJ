@@ -109,12 +109,12 @@ public class CharacterStats : MonoBehaviour
     #endregion
 
 
-    #region 花火子弹
-    [Header("花火子弹")]
-    public GameObject fireBall;
-    public Transform fireBallPoint;
+    //#region 花火子弹
+    //[Header("花火子弹")]
+    //public GameObject fireBall;
+    //public Transform fireBallPoint;
 
-    #endregion
+    //#endregion
 
     #region 稀有度
     [Header("稀有度")]
@@ -422,21 +422,21 @@ public class CharacterStats : MonoBehaviour
     #endregion
 
 
-    public void fireBallShot()
-    {
-        if (fireBall != null && fireBallPoint != null)
-        {
-            GameObject fireball = Instantiate(fireBall, fireBallPoint.position, fireBallPoint.rotation);
-            Debug.Log("发射火球");
-        }
-        else
-        {
-            Debug.Log("没有火球子弹");
+    //public void fireBallShot()
+    //{
+    //    if (fireBall != null && fireBallPoint != null)
+    //    {
+    //        GameObject fireball = Instantiate(fireBall, fireBallPoint.position, fireBallPoint.rotation);
+    //        Debug.Log("发射火球");
+    //    }
+    //    else
+    //    {
+    //        Debug.Log("没有火球子弹");
 
-        }
+    //    }
 
 
-    }
+    //}
 
 
 
