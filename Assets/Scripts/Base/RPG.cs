@@ -134,6 +134,7 @@ public class RPG : MonoBehaviour
         {
             //Çá¹¥»÷
             LightAttack();
+			anim.SetTrigger("LAtt");
 
         }
 
@@ -141,6 +142,7 @@ public class RPG : MonoBehaviour
         if(Input.GetMouseButtonDown(1))
         {
             HeavyAttack();
+			anim.SetTrigger("HAtt");
 
         }
 

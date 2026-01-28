@@ -17,10 +17,13 @@ MonoBehaviour:
   icon: {fileID: 21300000, guid: 678a0ad4be47340d49403da6b930716c, type: 3}
   description: test
   maxStack: 5
-  itemHeld: 2
-  itemType: 0
+  itemHeld: 5
+  itemType: 3
   additionalData: {fileID: 0}
   functionScript: {fileID: 0}
   damage: 0
   health: 0
   function: 
+  Duration: 0
+  Speed: 0
+  Defense: 0
