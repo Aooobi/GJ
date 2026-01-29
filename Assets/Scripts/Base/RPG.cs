@@ -39,7 +39,11 @@ public class RPG : MonoBehaviour
     [Header("人物贴图")]
     [SerializeField] private Sprite characterSprite;
 
-    
+    [Header("复活&传送配置")]
+    public Transform villageRelifePoint;
+    public Transform monsterParent;
+    private GameTimeEvent gameTimeEvent;
+    private bool isInGodStatueRange = false; //是否在神像旁边
 
 
     //组件引用 2d？
@@ -86,6 +90,18 @@ public class RPG : MonoBehaviour
 
         lastLATime = -baseAttackCD;
         lastHATime = -baseAttackCD;
+
+
+        gameTimeEvent = GameTimeEvent.Instance;
+        if(gameTimeEvent == null )
+        {
+            Debug.LogError("场景中无GameTimeEvent脚本！");
+        }
+        if(villageRelifePoint == null )
+        {
+            Debug.LogWarning("未赋值村庄复活点！");
+        }
+
         
         
         // 获取背包面板上的BP_Exit脚本
@@ -95,6 +111,10 @@ public class RPG : MonoBehaviour
         }
 
         BPEvent.Instance.OnInventoryStateChanged.AddListener(OnInventoryStateChange);
+
+
+
+
     }
 
     private void Start()
@@ -183,9 +203,28 @@ public class RPG : MonoBehaviour
 
         }
 
+        //快捷键
+        if (Input.GetKeyDown(KeyCode.Alpha1))
+        {
+            Debug.Log("按下快捷键1");
+
+        }
+        if (Input.GetKeyDown(KeyCode.Alpha2))
+        {
+            Debug.Log("按下快捷键2");
+
+        }
+        if (Input.GetKeyDown(KeyCode.Alpha3))
+        {
+            Debug.Log("按下快捷键3");
+
+        }
+
+
+
         #region 发射火球的方向/角色朝向
 
-        
+
         Vector3 mouseWorldPos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
         mouseWorldPos.z = transform.position.z;
         //角色翻转
@@ -394,6 +433,12 @@ public class RPG : MonoBehaviour
                 PlayerDoSleep();
                 return;
             }
+            else if(isInGodStatueRange)
+             {
+                GodStatueSacrifice();
+                return;
+
+            }
 
             Debug.Log("没有可交互的对象");
         }
@@ -437,13 +482,19 @@ public class RPG : MonoBehaviour
 
     #region 场景交互
 
-    #region 靠近床睡觉
+    #region 靠近床睡觉/ 靠近神像
     private void OnTriggerEnter2D(Collider2D other)
     {
-        if(other.CompareTag("Bed"))
+        if (other.CompareTag("Bed"))
         {
             isCanSleep = true;
             Debug.Log("靠近床，可以睡觉(这个文本框还没做)");
+        }
+        else if (other.CompareTag("GodStatue"))
+        {
+            isInGodStatueRange = true;
+            Debug.Log("靠近特殊神像，按F献祭花火解锁区域！");
+
         }
 
     }
@@ -453,6 +504,12 @@ public class RPG : MonoBehaviour
         {
             isCanSleep = false;
             Debug.Log("离开床，不能睡觉");
+
+        }
+        else if (other.CompareTag("GodStatue"))
+        {
+            isInGodStatueRange = false;
+
         }
 
     }
@@ -464,6 +521,7 @@ public class RPG : MonoBehaviour
             on_black: () =>
             {
                 GameTimeEvent.Instance.SleepToNextDay();
+                ResetMonsters();
 
         if (bpExitScript != null)
         {
@@ -485,41 +543,144 @@ public class RPG : MonoBehaviour
     }
     #endregion
 
+    #region 神像献祭
+    public void GodStatueSacrifice()
+    {
+        if (!characterStats.SacrificeSparks()) return; // 献祭失败直接返回
+        // 献祭成功，调用淡入淡出传回村庄
+        UIFadeEffect.Instance.FadeOutAndFadeIn(
+            on_black: () => { RespawnToVillage(); },
+            on_complete: () => { Debug.Log("献祭成功，已传回村庄！"); },
+            active_panel_on_end: false
+        );
+    }
+    #endregion
+
+    
+    #endregion
+
+
+    #region 复活逻辑
+        public void OnPlayerDead()
+        {
+            StopPlayerMovement();
+            //调用渐隐渐显
+            UIFadeEffect.Instance.FadeOutAndFadeIn
+            (
+                on_black: () =>
+                {
+                    ResetAllProgress(); // 清零玩家进度
+                    RespawnToVillage(); // 传送回村庄
+                    ResetMonsters();    // 刷新怪物
+                    ResetGameDay();     // 重置游戏天数
+                },
+                on_complete: () =>
+                {
+                    RevivePlayer(); // 玩家满血复活
+                    StartPlayerMovement(); // 解锁操作
+                    
+                    ConversationManager.instance.LoadConversationByName("玩家死亡复活后", false);
+                    Debug.Log("玩家复活，进度已清零！");
+                },
+                active_panel_on_end: false
+            );
+
+        }
+        #region 进度清零
+            private void ResetAllProgress()
+            {
+                characterStats.unlockArea = 0; // 区域层数清零
+                // 临时属性重置为基础值（攻速/移速/攻击力）
+                characterStats.moveSpeed = characterStats.baseMoveSpeed;
+                characterStats.attackSpeed = characterStats.baseAttackSpeed;
+                characterStats.lightAttack = characterStats.baseLightAttack;
+                characterStats.heavyAttack = characterStats.baseHeavyAttack;
+            }
+
+
+        #endregion
+
+        #region 传送回起点
+        private void RespawnToVillage()
+        {
+            transform.position = villageRelifePoint.position;
+            rb.velocity = Vector2.zero; // 重置速度，防止漂移
+        }
+
+
+
+        #endregion
+
+        #region 怪兽刷新
+        private void ResetMonsters()
+        {
+            if (monsterParent == null)
+            { 
+             return;
+            } 
+            // 倒序销毁，避免索引错乱
+            for (int i = monsterParent.childCount - 1; i >= 0; i--)
+            {
+                Destroy(monsterParent.GetChild(i).gameObject);
+            }
+        }
+
+
+        #endregion
+
+        #region 重置天数
+        private void ResetGameDay()
+        {
+            gameTimeEvent.ResetGameDay();
+        }
+
+        #endregion
+
+        #region 玩家复活
+        private void RevivePlayer()
+        {
+            characterStats.Revive(1f); // 1f=满血复活
+            characterStats.currentSparks = characterStats.maxSparks; // 满花火
+        }
+        #endregion
+
+
+
+        #endregion
+
     #region 对话锁定实现接口
-    public void StopPlayerMovement()
-    {
-        if(isPlayerLocked)
+        public void StopPlayerMovement()
         {
-            return;
-        }
-        isPlayerLocked = true;
-        if(rb!=null)
-        {
-            rb.velocity = Vector2.zero;
-        }
+            if(isPlayerLocked)
+            {
+                return;
+            }
+            isPlayerLocked = true;
+            if(rb!=null)
+            {
+                rb.velocity = Vector2.zero;
+            }
         
-        Debug.Log("操作已锁定");
+            Debug.Log("操作已锁定");
     
-    }
-
-    public void StartPlayerMovement()
-    {
-        if(isPlayerLocked==false)
-        {
-            return;
         }
-        isPlayerLocked = false;
-        Debug.Log("操作已恢复");
-    
-    
-    }
 
-   
+        public void StartPlayerMovement()
+        {
+            if(isPlayerLocked==false)
+            {
+                return;
+            }
+            isPlayerLocked = false;
+            Debug.Log("操作已恢复");
+    
+    
+        }
+
+
 
 
     #endregion
 
-
-    #endregion
-
+    
 }

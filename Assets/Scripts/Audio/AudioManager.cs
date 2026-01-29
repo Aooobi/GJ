@@ -1,72 +1,420 @@
-// using UnityEngine;
-//
-// public class AudioManager : MonoBehaviour
-// {
-//     public static AudioManager Instance { get; private set; }
-//
-//     [Header("BGM Settings")]
-//     public float bgmVolume = 0.7f;
-//     
-//     [Header("SFX Settings")]
-//     public float sfxVolume = 1f;
-//     public int maxConcurrentSFX = 10; // æœ€å¤§åŒæ—¶æ’­æ”¾éŸ³æ•ˆæ•°
-//
-//     private BGMPlayer bgmPlayer;
-//     private SFXPlayer sfxPlayer;
-//
-//     void Awake()
-//     {
-//         if (Instance != null && Instance != this)
-//         {
-//             Destroy(gameObject);
-//             return;
-//         }
-//
-//         Instance = this;
-//         DontDestroyOnLoad(gameObject);
-//
-//         // åˆ›å»ºå­æ’­æ”¾å™¨
-//         GameObject bgmObj = new GameObject("BGMPlayer");
-//         bgmObj.transform.SetParent(transform);
-//         bgmPlayer = bgmObj.AddComponent<BGMPlayer>();
-//         bgmPlayer.Init(bgmVolume);
-//
-//         GameObject sfxObj = new GameObject("SFXPlayer");
-//         sfxObj.transform.SetParent(transform);
-//         sfxPlayer = sfxObj.AddComponent<SFXPlayer>();
-//         sfxPlayer.Init(sfxVolume, maxConcurrentSFX);
-//     }
-//
-//     // ===== å…¬å…±æ¥å£ =====
-//     public static void PlayBGM(AudioClip clip, float fadeDuration = 1f)
-//     {
-//         Instance.bgmPlayer.Play(clip, fadeDuration);
-//     }
-//
-//     public static void StopBGM(float fadeDuration = 1f)
-//     {
-//         Instance.bgmPlayer.Stop(fadeDuration);
-//     }
-//
-//     public static void PauseBGM()
-//     {
-//         Instance.bgmPlayer.Pause();
-//     }
-//
-//     public static void ResumeBGM()
-//     {
-//         Instance.bgmPlayer.Resume();
-//     }
-//
-//     // 2D éŸ³æ•ˆ
-//     public static void PlaySFX(AudioClip clip, float volumeScale = 1f)
-//     {
-//         Instance.sfxPlayer.Play2D(clip, volumeScale);
-//     }
-//
-//     // 3D éŸ³æ•ˆï¼ˆå¸¦ä½ç½®ï¼‰
-//     public static void PlaySFX3D(AudioClip clip, Vector3 position, float volumeScale = 1f)
-//     {
-//         Instance.sfxPlayer.Play3D(clip, position, volumeScale);
-//     }
-// }
+using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+
+/// <summary>
+/// È«¾ÖÒôÆµ¹ÜÀíÆ÷ - µ¥ÀıÄ£Ê½
+/// BGMÖ§³ÖÑ­»·²¥·Å¡¢ÇĞ»»¡¢Í£Ö¹
+/// SFXÖ§³ÖÔÚÖ¸¶¨Î»ÖÃ²¥·Å
+/// ×ÊÔ´Â·¾¶£ºResources/Music ºÍ Resources/SFX
+/// </summary>
+public class AudioManager : MonoBehaviour
+{
+    // µ¥ÀıÊµÀı
+    private static AudioManager _instance;
+    public static AudioManager Instance
+    {
+        get
+        {
+            if (_instance == null)
+            {
+                // ³¢ÊÔÔÚ³¡¾°ÖĞ²éÕÒÒÑ´æÔÚµÄÊµÀı
+                _instance = FindObjectOfType<AudioManager>();
+
+                if (_instance == null)
+                {
+                    // ´´½¨ĞÂµÄAudioManager
+                    GameObject audioManagerObj = new GameObject("AudioManager");
+                    _instance = audioManagerObj.AddComponent<AudioManager>();
+
+                    // ÉèÖÃBGMµÄAudioSource
+                    AudioSource bgmSource = audioManagerObj.AddComponent<AudioSource>();
+                    bgmSource.loop = true;
+                    bgmSource.playOnAwake = false;
+                    _instance.BGM = bgmSource;
+
+                    // ±ê¼ÇÎª²»Ïú»Ù
+                    DontDestroyOnLoad(audioManagerObj);
+                }
+            }
+            return _instance;
+        }
+    }
+
+    [Header("ÒôÆµÔ´ÅäÖÃ")]
+    [SerializeField] private AudioSource BGM; // BGMÒôÆµÔ´
+    [SerializeField] private float bgmVolume = 0.7f; // BGMÒôÁ¿
+    [SerializeField] private float sfxVolume = 1.0f; // SFXÒôÁ¿
+
+    [Header("×ÊÔ´Ä¿Â¼ÅäÖÃ")]
+    [SerializeField] private string musicFolderPath = "Music/"; // ÒôÀÖ×ÊÔ´Â·¾¶
+    [SerializeField] private string sfxFolderPath = "SFX/"; // ÒôĞ§×ÊÔ´Â·¾¶
+
+    // ÒôÆµ¼ô¼­»º´æ£¨±ÜÃâÖØ¸´¼ÓÔØ£©
+    private Dictionary<string, AudioClip> _musicCache = new Dictionary<string, AudioClip>();
+    private Dictionary<string, AudioClip> _sfxCache = new Dictionary<string, AudioClip>();
+
+    #region UnityÉúÃüÖÜÆÚ·½·¨
+    private void Awake()
+    {
+        // µ¥Àı³õÊ¼»¯
+        if (_instance != null && _instance != this)
+        {
+            Destroy(gameObject);
+            return;
+        }
+
+        _instance = this;
+        DontDestroyOnLoad(gameObject);
+
+        // Èç¹ûBGMÎ´¸³Öµ£¬³¢ÊÔ»ñÈ¡»ò´´½¨
+        if (BGM == null)
+        {
+            BGM = GetComponent<AudioSource>();
+            if (BGM == null)
+            {
+                BGM = gameObject.AddComponent<AudioSource>();
+            }
+        }
+
+        // ÅäÖÃBGMÒôÆµÔ´
+        ConfigureAudioSource();
+    }
+
+    private void Start()
+    {
+        // Ó¦ÓÃ³õÊ¼ÒôÁ¿ÉèÖÃ
+        SetBGMVolume(bgmVolume);
+    }
+    #endregion
+
+    #region BGMÏà¹Ø·½·¨
+    /// <summary>
+    /// ²¥·Å±³¾°ÒôÀÖ
+    /// </summary>
+    /// <param name="clipName">ÒôÀÖÃû³Æ£¨²»´øÀ©Õ¹Ãû£©</param>
+    /// <param name="fadeDuration">µ­ÈëÊ±¼ä£¨Ãë£©£¬0±íÊ¾Á¢¼´²¥·Å</param>
+    public void PlayBGM(string clipName, float fadeDuration = 0f)
+    {
+        if (string.IsNullOrEmpty(clipName))
+        {
+            Debug.LogWarning("BGMÃû³Æ²»ÄÜÎª¿Õ");
+            return;
+        }
+
+        // Èç¹ûÕıÔÚ²¥·ÅÍ¬Ò»Ê×ÒôÀÖ£¬Ö±½Ó·µ»Ø
+        if (BGM.isPlaying && BGM.clip != null && BGM.clip.name == clipName)
+        {
+            Debug.Log($"BGM '{clipName}' ÒÑÔÚ²¥·ÅÖĞ");
+            return;
+        }
+
+        // ¼ÓÔØÒôÀÖ¼ô¼­
+        AudioClip clip = LoadAudioClip(clipName, true);
+        if (clip == null)
+        {
+            Debug.LogError($"ÎŞ·¨¼ÓÔØBGM: {clipName}");
+            return;
+        }
+
+        // ´¦Àíµ­ÈëĞ§¹û
+        if (fadeDuration > 0 && BGM.isPlaying)
+        {
+            StartCoroutine(CrossFadeBGM(clip, fadeDuration));
+        }
+        else
+        {
+            BGM.clip = clip;
+            BGM.Play();
+
+            if (fadeDuration > 0)
+            {
+                StartCoroutine(FadeInBGM(fadeDuration));
+            }
+        }
+    }
+
+    /// <summary>
+    /// Í£Ö¹²¥·Å±³¾°ÒôÀÖ
+    /// </summary>
+    /// <param name="fadeDuration">µ­³öÊ±¼ä£¨Ãë£©£¬0±íÊ¾Á¢¼´Í£Ö¹</param>
+    public void StopBGM(float fadeDuration = 0f)
+    {
+        if (!BGM.isPlaying) return;
+
+        if (fadeDuration > 0)
+        {
+            StartCoroutine(FadeOutBGM(fadeDuration, true));
+        }
+        else
+        {
+            BGM.Stop();
+        }
+    }
+
+    /// <summary>
+    /// ÔİÍ£±³¾°ÒôÀÖ
+    /// </summary>
+    public void PauseBGM()
+    {
+        if (BGM.isPlaying)
+        {
+            BGM.Pause();
+        }
+    }
+
+    /// <summary>
+    /// »Ö¸´±³¾°ÒôÀÖ
+    /// </summary>
+    public void ResumeBGM()
+    {
+        if (!BGM.isPlaying && BGM.clip != null)
+        {
+            BGM.Play();
+        }
+    }
+
+    /// <summary>
+    /// ÉèÖÃBGMÒôÁ¿
+    /// </summary>
+    /// <param name="volume">ÒôÁ¿Öµ£¨0-1£©</param>
+    public void SetBGMVolume(float volume)
+    {
+        bgmVolume = Mathf.Clamp01(volume);
+        BGM.volume = bgmVolume;
+    }
+
+    /// <summary>
+    /// »ñÈ¡µ±Ç°BGMÒôÁ¿
+    /// </summary>
+    public float GetBGMVolume()
+    {
+        return bgmVolume;
+    }
+    #endregion
+
+    #region SFXÏà¹Ø·½·¨
+    /// <summary>
+    /// ÔÚÖ¸¶¨Î»ÖÃ²¥·ÅÒôĞ§
+    /// </summary>
+    /// <param name="clipName">ÒôĞ§Ãû³Æ£¨²»´øÀ©Õ¹Ãû£©</param>
+    /// <param name="position">²¥·ÅÎ»ÖÃ</param>
+    /// <param name="volume">ÒôÁ¿£¨0-1£©£¬Ä¬ÈÏÊ¹ÓÃÈ«¾ÖSFXÒôÁ¿</param>
+    /// <param name="pitch">Òô¸ß£¨0-3£©£¬1ÎªÕı³£</param>
+    public void PlaySFX(string clipName, Vector3 position, float volume = -1f, float pitch = 1f)
+    {
+        if (string.IsNullOrEmpty(clipName))
+        {
+            Debug.LogWarning("SFXÃû³Æ²»ÄÜÎª¿Õ");
+            return;
+        }
+
+        // ¼ÓÔØÒôĞ§¼ô¼­
+        AudioClip clip = LoadAudioClip(clipName, false);
+        if (clip == null)
+        {
+            Debug.LogError($"ÎŞ·¨¼ÓÔØSFX: {clipName}");
+            return;
+        }
+
+        // Ê¹ÓÃÖ¸¶¨µÄÒôÁ¿»òÈ«¾ÖÒôÁ¿
+        float finalVolume = volume >= 0 ? Mathf.Clamp01(volume) : sfxVolume;
+
+        // ÔÚÖ¸¶¨Î»ÖÃ²¥·ÅÒôĞ§
+        AudioSource.PlayClipAtPoint(clip, position, finalVolume);
+    }
+
+    /// <summary>
+    /// ÔÚµ±Ç°Î»ÖÃ²¥·ÅÒôĞ§£¨Ê¹ÓÃÖ÷ÉãÏñ»úÎ»ÖÃ£©
+    /// </summary>
+    public void PlaySFX(string clipName, float volume = -1f, float pitch = 1f)
+    {
+        Vector3 position = Camera.main != null ? Camera.main.transform.position : Vector3.zero;
+        PlaySFX(clipName, position, volume, pitch);
+    }
+
+    /// <summary>
+    /// ÉèÖÃSFXÒôÁ¿
+    /// </summary>
+    public void SetSFXVolume(float volume)
+    {
+        sfxVolume = Mathf.Clamp01(volume);
+    }
+
+    /// <summary>
+    /// »ñÈ¡µ±Ç°SFXÒôÁ¿
+    /// </summary>
+    public float GetSFXVolume()
+    {
+        return sfxVolume;
+    }
+    #endregion
+
+    #region Ë½ÓĞ¸¨Öú·½·¨
+    /// <summary>
+    /// ÅäÖÃÒôÆµÔ´
+    /// </summary>
+    private void ConfigureAudioSource()
+    {
+        if (BGM != null)
+        {
+            BGM.loop = true;
+            BGM.playOnAwake = false;
+            BGM.volume = bgmVolume;
+        }
+    }
+
+    /// <summary>
+    /// ¼ÓÔØÒôÆµ¼ô¼­
+    /// </summary>
+    private AudioClip LoadAudioClip(string clipName, bool isMusic)
+    {
+        Dictionary<string, AudioClip> cache = isMusic ? _musicCache : _sfxCache;
+        string folderPath = isMusic ? musicFolderPath : sfxFolderPath;
+
+        // ¼ì²é»º´æ
+        if (cache.ContainsKey(clipName))
+        {
+            return cache[clipName];
+        }
+
+        // ´ÓResources¼ÓÔØ
+        string fullPath = folderPath + clipName;
+        AudioClip clip = Resources.Load<AudioClip>(fullPath);
+
+        if (clip != null)
+        {
+            cache[clipName] = clip;
+            return clip;
+        }
+
+        // ³¢ÊÔ²»´øÂ·¾¶Ö±½Ó¼ÓÔØ£¨ÓĞĞ©×ÊÔ´¿ÉÄÜÔÚ²»Í¬×ÓÎÄ¼ş¼ĞÖĞ£©
+        clip = Resources.Load<AudioClip>(clipName);
+        if (clip != null)
+        {
+            cache[clipName] = clip;
+            return clip;
+        }
+
+        return null;
+    }
+
+    /// <summary>
+    /// Çå¿ÕÒôÆµ»º´æ£¨ÊÍ·ÅÄÚ´æ£©
+    /// </summary>
+    public void ClearCache()
+    {
+        _musicCache.Clear();
+        _sfxCache.Clear();
+        Resources.UnloadUnusedAssets();
+    }
+    #endregion
+
+    #region Ğ­³Ì£ºµ­Èëµ­³öĞ§¹û
+    /// <summary>
+    /// BGMµ­ÈëĞ§¹û
+    /// </summary>
+    private IEnumerator FadeInBGM(float duration)
+    {
+        float startVolume = 0f;
+        float endVolume = bgmVolume;
+        float elapsedTime = 0f;
+
+        BGM.volume = startVolume;
+
+        while (elapsedTime < duration)
+        {
+            elapsedTime += Time.deltaTime;
+            BGM.volume = Mathf.Lerp(startVolume, endVolume, elapsedTime / duration);
+            yield return null;
+        }
+
+        BGM.volume = endVolume;
+    }
+
+    /// <summary>
+    /// BGMµ­³öĞ§¹û
+    /// </summary>
+    private IEnumerator FadeOutBGM(float duration, bool stopAfterFade = false)
+    {
+        float startVolume = BGM.volume;
+        float endVolume = 0f;
+        float elapsedTime = 0f;
+
+        while (elapsedTime < duration)
+        {
+            elapsedTime += Time.deltaTime;
+            BGM.volume = Mathf.Lerp(startVolume, endVolume, elapsedTime / duration);
+            yield return null;
+        }
+
+        BGM.volume = endVolume;
+
+        if (stopAfterFade)
+        {
+            BGM.Stop();
+            BGM.volume = bgmVolume; // »Ö¸´Ô­Ê¼ÒôÁ¿
+        }
+    }
+
+    /// <summary>
+    /// BGM½»²æµ­Èëµ­³öĞ§¹û£¨Æ½»¬ÇĞ»»ÒôÀÖ£©
+    /// </summary>
+    private IEnumerator CrossFadeBGM(AudioClip newClip, float duration)
+    {
+        // µ­³öµ±Ç°ÒôÀÖ
+        yield return StartCoroutine(FadeOutBGM(duration / 2, false));
+
+        // ÇĞ»»ÒôÀÖ
+        BGM.clip = newClip;
+        BGM.Play();
+
+        // µ­ÈëĞÂÒôÀÖ
+        yield return StartCoroutine(FadeInBGM(duration / 2));
+    }
+    #endregion
+
+    #region ±à¼­Æ÷µ÷ÊÔ·½·¨
+#if UNITY_EDITOR
+    // ÔÚInspectorÖĞÌí¼Óµ÷ÊÔ°´Å¥
+    [ContextMenu("²âÊÔBGM²¥·Å")]
+    private void TestPlayBGM()
+    {
+        // ²éÕÒResources/MusicÄ¿Â¼ÏÂµÄµÚÒ»¸öÒôÆµÎÄ¼ş
+        AudioClip[] musicClips = Resources.LoadAll<AudioClip>(musicFolderPath);
+        if (musicClips.Length > 0)
+        {
+            PlayBGM(musicClips[0].name, 1f);
+            Debug.Log($"²âÊÔ²¥·ÅBGM: {musicClips[0].name}");
+        }
+        else
+        {
+            Debug.LogWarning($"Resources/{musicFolderPath}Ä¿Â¼ÏÂÎ´ÕÒµ½ÒôÆµÎÄ¼ş");
+        }
+    }
+
+    [ContextMenu("²âÊÔSFX²¥·Å")]
+    private void TestPlaySFX()
+    {
+        // ²éÕÒResources/SFXÄ¿Â¼ÏÂµÄµÚÒ»¸öÒôÆµÎÄ¼ş
+        AudioClip[] sfxClips = Resources.LoadAll<AudioClip>(sfxFolderPath);
+        if (sfxClips.Length > 0)
+        {
+            PlaySFX(sfxClips[0].name, Vector3.zero);
+            Debug.Log($"²âÊÔ²¥·ÅSFX: {sfxClips[0].name}");
+        }
+        else
+        {
+            Debug.LogWarning($"Resources/{sfxFolderPath}Ä¿Â¼ÏÂÎ´ÕÒµ½ÒôÆµÎÄ¼ş");
+        }
+    }
+
+    [ContextMenu("Í£Ö¹BGM")]
+    private void TestStopBGM()
+    {
+        StopBGM(1f);
+        Debug.Log("Í£Ö¹BGM");
+    }
+#endif
+    #endregion
+}

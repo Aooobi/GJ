@@ -219,7 +219,7 @@ public class NPC : MonoBehaviour
 
             float randomX = Random.Range(minX,maxX);
 
-            targetPoint = new Vector2(randomX, villageleft.position.y);
+            targetPoint = new Vector2(randomX, transform.position.y);
 
             Debug.Log("´åÃñ¼ÌÐøÑ²Âß");
 
