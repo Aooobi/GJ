@@ -10,11 +10,11 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: cf220b45eac5b0c40ba93669d26e115c, type: 3}
-  m_Name: "\u4E00\u5C42-\u4E0E\u827E\u7C73\u5BF9\u8BDD-\u6216\u8BB8\u5427"
+  m_Name: "\u4E8C\u5C42-\u4E0E\u521D\u5BF9\u8BDD-\u6211\u7684\u82B1\u74E3\u4E5F\u51CF\u5C11\u4E86"
   m_EditorClassIdentifier: 
-  GroupName: "\u4E00\u5C42-\u4E0E\u827E\u7C73\u5BF9\u8BDD-\u6216\u8BB8\u5427"
+  GroupName: "\u4E8C\u5C42-\u4E0E\u521D\u5BF9\u8BDD-\u6211\u7684\u82B1\u74E3\u4E5F\u51CF\u5C11\u4E86"
   Conversations:
-  - SpeakerName: "\u827E\u7C73"
-    Content: "\u6211\u4EEC\u4E00\u5B9A\u53EF\u4EE5\u6C38\u8FDC\u7684\u4F9D\u9760\u82B1\u74E3\u751F\u6D3B\u4E0B\u53BB\uFF01"
+  - SpeakerName: "\u521D"
+    Content: "\u597D\u5427\u2026\u2026\u6211\u77E5\u9053\u4E86\u2026\u2026"
   NextGroup: []
   NextGroupText: []

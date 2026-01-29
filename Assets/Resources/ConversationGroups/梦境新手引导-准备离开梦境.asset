@@ -16,6 +16,8 @@ MonoBehaviour:
   Conversations:
   - SpeakerName: 
     Content: "...\u597D\u70ED..."
+  - SpeakerName: 
+    Content: "\u5C31\u50CF\u5728\u5BC6\u4E0D\u900F\u98CE\u7684\u70E4\u7089\u4E4B\u4E2D\u2026\u2026"
   - SpeakerName: "\u795E\u79D8\u58F0\u97F3"
     Content: "\u8FF7\u9014\u7684\u7075\u9B42...\u4F60\u5E26\u6765\u4E86\u4EC0\u4E48\uFF1F"
   - SpeakerName: 
