@@ -101033,7 +101033,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!61 &1164605376
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -101063,7 +101063,7 @@ BoxCollider2D:
   m_CallbackLayers:
     serializedVersion: 2
     m_Bits: 4294967295
-  m_IsTrigger: 0
+  m_IsTrigger: 1
   m_UsedByEffector: 0
   m_UsedByComposite: 0
   m_Offset: {x: 0, y: 0}
@@ -101140,7 +101140,7 @@ Transform:
   m_GameObject: {fileID: 1164605375}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -342.19, y: -14.84, z: 0}
+  m_LocalPosition: {x: -341.8, y: -25.5, z: 0}
   m_LocalScale: {x: 13.025046, y: 2.6014, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
