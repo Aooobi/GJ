@@ -15,7 +15,7 @@ public class MainMenu : MonoBehaviour
         Debug.Log("Start Game button clicked!");
         // Add logic to start the game, e.g., load the first level
 
-        AudioManager.Instance.PlayBGM("花火镇BGM");
+        //AudioManager.Instance.PlayBGM("花火镇BGM");
     }
 
     public void OpenOrCloseConfig()

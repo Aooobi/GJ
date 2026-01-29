@@ -32,4 +32,14 @@ public class CGConversation : MonoBehaviour
     {
 
     }
+
+    public void Stop1BGM()
+    {
+        AudioManager.Instance.StopBGM();
+    }
+
+    public void PlayXindian()
+    {
+        AudioManager.Instance.PlayBGM("ÐÄµç");
+    }
 }
