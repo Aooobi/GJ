@@ -12,7 +12,7 @@ public class ConversationManager : MonoBehaviour
 
     public Text Content;
     public Text Name;
-    public GameObject Player; //玩家引用
+    public RPG Player; //玩家引用
     [Header("需要控制的显示隐藏面板")]
     //需要控制的显示隐藏 开启对话隐藏 关闭对话显示
     public RectTransform BackgroundPanel;
@@ -49,7 +49,7 @@ public class ConversationManager : MonoBehaviour
 
     void Start()
     {
-        if (Player == null)
+        //if (Player == null)
             //     Player = Interactor.Instance_Player; //需要从单例获取
             currentConversation = null;
         BackgroundPanel.gameObject.SetActive(false);
@@ -214,7 +214,10 @@ public class ConversationManager : MonoBehaviour
     /// <param name="conversationUnits"></param>
     public void LoadConversationByName(string conversationName,bool black_or_not = false)
     {
-       
+        if (Player != null)
+        {
+            Player.StopPlayerMovement();
+        }
         for (int i = 0; i < AllConversation.Count; i++)
         {
             //找到对应名字的对话组
@@ -236,6 +239,11 @@ public class ConversationManager : MonoBehaviour
         //电影黑边收起
         TopBar.DOFillAmount(0,0.5f).SetEase(Ease.Linear);
         BottomBar.DOFillAmount(0, 0.5f).SetEase(Ease.Linear);
+        //允许玩家移动
+        if (Player != null)
+        {
+            Player.StartPlayerMovement();
+        }
         //对话结束 还是调用淡出淡入
         if (fade_or_not)
         {
