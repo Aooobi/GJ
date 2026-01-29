@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Security.Cryptography;
 using UnityEngine;
 using UnityEngine.Events;
 
@@ -11,8 +12,11 @@ public class GameTimeEvent : MonoBehaviour
     //单例
     public static GameTimeEvent Instance;
 
+
     //睡觉刷新第二天
     public UnityEvent OnSleepRefreshNextDay;
+    //睡觉刷新怪物事件
+    public UnityEvent OnSleepRefreshMonster;
 
     [Header("游戏内天数配置")]
     [SerializeField] private int startDay = 1;
@@ -42,8 +46,20 @@ public class GameTimeEvent : MonoBehaviour
         {
             OnSleepRefreshNextDay.Invoke();
         }
+        if(OnSleepRefreshMonster!=null)
+        {
+            OnSleepRefreshMonster.Invoke();
+        }
        
     }
+
+    public void ResetGameDay()
+    {
+        currentDay = startDay;
+        Debug.Log($"游戏天数已重置为初始值：第{currentDay}天");
+
+    }
+
 
 
 }
