@@ -17,9 +17,7 @@ MonoBehaviour:
   - SpeakerName: 
     Content: "\u8FD9\u662F...\u54EA\u91CC\uFF1F"
   - SpeakerName: 
-    Content: "\u4E0B\u96E8\u4E86\uFF1F"
-  - SpeakerName: 
-    Content: "\u8FD9\u96E8\u662F\u6E29\u70ED\u7684..."
+    Content: "\u597D\u70ED\u2026\u2026"
   - SpeakerName: 
     Content: "\u524D\u9762\u597D\u50CF\u6709\u4EC0\u4E48\u4E1C\u897F\u2026\u2026"
   - SpeakerName: 
