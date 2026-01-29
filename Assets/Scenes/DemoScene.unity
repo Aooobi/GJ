@@ -610,6 +610,7 @@ GameObject:
   - component: {fileID: 89592856}
   - component: {fileID: 89592855}
   - component: {fileID: 89592854}
+  - component: {fileID: 89592858}
   m_Layer: 6
   m_Name: "\u5F17\u6069"
   m_TagString: NPC
@@ -768,6 +769,27 @@ MonoBehaviour:
   FreshPoint: {fileID: 2086562894}
   textPrefab: {fileID: 0}
   mainCanvas: {fileID: 0}
+--- !u!95 &89592858
+Animator:
+  serializedVersion: 5
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 89592852}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: ba874abf75f718a46963ae01d283416e, type: 2}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_StabilizeFeet: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorStateOnDisable: 0
+  m_WriteDefaultValuesOnDisable: 0
 --- !u!1 &174728350
 GameObject:
   m_ObjectHideFlags: 0
@@ -96932,6 +96954,7 @@ GameObject:
   - component: {fileID: 441856690}
   - component: {fileID: 441856689}
   - component: {fileID: 441856688}
+  - component: {fileID: 441856692}
   m_Layer: 6
   m_Name: "\u7C73\u7279"
   m_TagString: NPC
@@ -97090,6 +97113,27 @@ MonoBehaviour:
   FreshPoint: {fileID: 2086562894}
   textPrefab: {fileID: 0}
   mainCanvas: {fileID: 0}
+--- !u!95 &441856692
+Animator:
+  serializedVersion: 5
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 441856686}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: 2612bf66013432844bf915cf34667de8, type: 2}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_StabilizeFeet: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorStateOnDisable: 0
+  m_WriteDefaultValuesOnDisable: 0
 --- !u!1 &464688810
 GameObject:
   m_ObjectHideFlags: 0
@@ -98959,6 +99003,7 @@ GameObject:
   - component: {fileID: 884281468}
   - component: {fileID: 884281467}
   - component: {fileID: 884281466}
+  - component: {fileID: 884281470}
   m_Layer: 6
   m_Name: "\u52A0\u91CC\u5C14"
   m_TagString: NPC
@@ -99117,6 +99162,27 @@ MonoBehaviour:
   FreshPoint: {fileID: 2086562894}
   textPrefab: {fileID: 0}
   mainCanvas: {fileID: 0}
+--- !u!95 &884281470
+Animator:
+  serializedVersion: 5
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 884281464}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: f3dc2be29af48844c99653182fd8b577, type: 2}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_StabilizeFeet: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorStateOnDisable: 0
+  m_WriteDefaultValuesOnDisable: 0
 --- !u!1 &905109310
 GameObject:
   m_ObjectHideFlags: 0
@@ -100953,6 +101019,7 @@ GameObject:
   - component: {fileID: 1205064021}
   - component: {fileID: 1205064020}
   - component: {fileID: 1205064019}
+  - component: {fileID: 1205064023}
   m_Layer: 6
   m_Name: "\u827E\u8389"
   m_TagString: NPC
@@ -101111,6 +101178,27 @@ MonoBehaviour:
   FreshPoint: {fileID: 2086562894}
   textPrefab: {fileID: 0}
   mainCanvas: {fileID: 0}
+--- !u!95 &1205064023
+Animator:
+  serializedVersion: 5
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1205064017}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: 30c1c1f9cbfb57649b9270b5812c6550, type: 2}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_StabilizeFeet: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorStateOnDisable: 0
+  m_WriteDefaultValuesOnDisable: 0
 --- !u!1 &1210259985
 GameObject:
   m_ObjectHideFlags: 0
@@ -104021,6 +104109,7 @@ GameObject:
   - component: {fileID: 1687568396}
   - component: {fileID: 1687568395}
   - component: {fileID: 1687568394}
+  - component: {fileID: 1687568398}
   m_Layer: 6
   m_Name: "\u521D"
   m_TagString: NPC
@@ -104179,6 +104268,27 @@ MonoBehaviour:
   FreshPoint: {fileID: 2086562894}
   textPrefab: {fileID: 0}
   mainCanvas: {fileID: 0}
+--- !u!95 &1687568398
+Animator:
+  serializedVersion: 5
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1687568392}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: ce398e0a7e58fa3418e1efaa3fe32870, type: 2}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_StabilizeFeet: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorStateOnDisable: 0
+  m_WriteDefaultValuesOnDisable: 0
 --- !u!1 &1696773130
 GameObject:
   m_ObjectHideFlags: 0
