@@ -11,8 +11,9 @@ public class NPC : MonoBehaviour
     [SerializeField] private float moveSpeed = 2f;
     [SerializeField] private Transform villageleft;
     [SerializeField] private Transform villageright;
-    [SerializeField] private float npcScale = 2f;//新增村民基础缩放
+   // [SerializeField] private float npcScale = 2f;//新增村民基础缩放
     private Vector2 targetPoint;
+    private bool isStop = false;
 
     [Header("玩家碰撞检测")]
     [SerializeField] private string playerTag = "Player";
@@ -32,12 +33,13 @@ public class NPC : MonoBehaviour
     private Rigidbody2D rb;
     private SpriteRenderer sr;
     private Transform player;
-
+    private Vector3 originalScale;
 
     private void Awake()
     {
         rb = GetComponent<Rigidbody2D>();
         sr = GetComponent<SpriteRenderer>();
+        originalScale = transform.localScale;
 
         Physics2D.IgnoreLayerCollision(LayerMask.NameToLayer("NPC"), LayerMask.NameToLayer("NPC"),true);
         //Physics2D.IgnoreLayerCollision(LayerMask.NameToLayer("NPC"), LayerMask.NameToLayer("Player"),true);
@@ -65,9 +67,24 @@ public class NPC : MonoBehaviour
     {
         RandomPoint();
 
-        //初始化朝向
-        transform.localScale = new Vector3(npcScale, npcScale, 1);
+        if(GameTimeEvent.Instance != null)
+        {
+            GameTimeEvent.Instance.OnSleepRefreshNextDay.AddListener(TeleportToFreshPoint);
+        }
+        else
+        {
+            Debug.LogError("场景中未挂载GameTimeEvent脚本！请挂到EventSystem上");
+        }
 
+    }
+
+    // 新增2：移除监听（防止场景销毁时内存泄漏，规范写法）
+    private void OnDestroy()
+    {
+        if (GameTimeEvent.Instance != null)
+        {
+            GameTimeEvent.Instance.OnSleepRefreshNextDay.RemoveListener(TeleportToFreshPoint);
+        }
     }
 
     private void Update()
@@ -82,6 +99,7 @@ public class NPC : MonoBehaviour
     {
         Vector2 targetPos = FreshPoint != null ? FreshPoint.position : transform.position;
 
+        targetPos.y = -1.94f;
         //传送
         transform.position = targetPos;
         Debug.Log("村民已传送到祭坛位置");
@@ -97,6 +115,10 @@ public class NPC : MonoBehaviour
         //重新随机目标点
         RandomPoint();
 
+        // 新增以下3行 ↓ 核心延迟逻辑
+        isStop = true; // 传送后立刻锁定，NPC停住
+                       // 开启协程：等待4秒后，解除锁定让NPC移动
+        StartCoroutine(StopForSeconds(4f));
 
     }
 
@@ -114,10 +136,36 @@ public class NPC : MonoBehaviour
        
 
         Vector3 worldPos = transform.position + new Vector3(0,2f,0);
-        Vector2 screenPos = Camera.main.WorldToScreenPoint(worldPos);
-        textObj.GetComponent<RectTransform>().position = screenPos;
 
-        //2秒后自动销毁
+        //Vector2 screenPos = Camera.main.WorldToScreenPoint(worldPos);
+        //textObj.GetComponent<RectTransform>().position = screenPos;
+
+        //坐标转换（兼容所有Canvas渲染模式的通用写法）
+        RectTransform textRect = textObj.GetComponent<RectTransform>();
+        if (textRect == null)
+        {
+            Debug.LogError("【NPC头顶提示】textPrefab缺少RectTransform组件！请确保是UI预设");
+            Destroy(textObj);
+            return;
+        }
+        // 关键：用Canvas的Camera进行坐标转换（支持Overlay/Screen Space - Camera/World Space）
+        Vector2 screenPos;
+        if (RectTransformUtility.ScreenPointToLocalPointInRectangle(
+            mainCanvas.GetComponent<RectTransform>(),
+            Camera.main.WorldToScreenPoint(worldPos),
+            mainCanvas.worldCamera,
+            out screenPos))
+        {
+            textRect.anchoredPosition = screenPos;
+        }
+        else
+        {
+            Debug.LogError("【NPC头顶提示】坐标转换失败，请检查Canvas和相机设置");
+            Destroy(textObj);
+            return;
+        }
+
+        //3秒后自动销毁
         Destroy(textObj, 3f);
 
 
@@ -130,8 +178,10 @@ public class NPC : MonoBehaviour
     #region 巡逻
     private void NPCpatrol()
     {
+        if (isStop) { rb.velocity = Vector2.zero; return; }
+
         //碰到主角会停止移动
-        if(isTouchingPlayer)
+        if (isTouchingPlayer)
         {
             rb.velocity = new Vector2(0, rb.velocity.y);
             //Physics2D.IgnoreLayerCollision(LayerMask.NameToLayer("NPC"), LayerMask.NameToLayer("Player"),false);
@@ -221,12 +271,21 @@ public class NPC : MonoBehaviour
             return;
         }
 
-        float scaleX = Mathf.Sign(DirectionX) * npcScale;
-        transform.localScale = new Vector3( scaleX , npcScale , 1);
+        float scaleX = Mathf.Sign(DirectionX) * originalScale.x;
+        transform.localScale = new Vector3( scaleX , originalScale.y , originalScale.z);
 
     }
 
 
     #endregion
 
+
+    #region 携程作为延迟
+    // 新增：协程方法（专门做延迟解锁，只用写一次）
+    private IEnumerator StopForSeconds(float delayTime)
+    {
+        yield return new WaitForSeconds(delayTime); // 等待指定秒数（这里4秒）
+        isStop = false; // 时间到，解除锁定，NPC恢复巡逻
+    }
+    #endregion
 }
