@@ -28,5 +28,7 @@ MonoBehaviour:
     Content: "\u706B\u7130\u541E\u566C\u4E86\u7EFF\u8272\uFF0C\u6B32\u671B\u626D\u66F2\u4E86\u81EA\u7136\u3002"
   - SpeakerName: "\u4E1A\u706B\u4E4B\u82B1"
     Content: "\u6765\u5427\uFF0C\u8BA9\u6211\u770B\u770B\u4F60\u7684\u201C\u613F\u671B\u201D\u6709\u591A\u5F3A\u70C8\uFF01"
-  NextGroup: []
-  NextGroupText: []
+  NextGroup:
+  - {fileID: 11400000, guid: aa1b0346517cf7b4ebc72d727ca22f17, type: 2}
+  NextGroupText:
+  - "\u6211\u4F1A\u89E3\u51B3\u8FD9\u4E00\u5207"
