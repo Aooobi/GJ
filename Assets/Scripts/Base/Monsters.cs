@@ -36,6 +36,16 @@ public class Monsters : MonoBehaviour
     [Header("怪物贴图")]
     [SerializeField] private Sprite monsterSprite;
 
+    [Header("怪物掉落配置")]
+    [SerializeField] private GameObject itemOnWorldPrefabs;//预设体
+    [SerializeField] private ItemBase dropItem; //掉落物品
+    [SerializeField, Range(0f, 100f)] private float dropRate = 50f; //掉落概率 
+    [SerializeField] private Vector2 dropOffset = new Vector2(0.5f, 0.5f); //掉落位置
+
+
+
+
+
 
     private CharacterStats monstersStats;
     private CharacterStats playerStats;
@@ -45,7 +55,8 @@ public class Monsters : MonoBehaviour
     private Attack monsterAttack;//引用通用Attack脚本
 
     private float lastAttackTime;//上次攻击时间
-    
+
+    private Vector3 originalScale;//记录初始缩放 用于朝向反向
 
 
     private void Awake()
@@ -55,6 +66,9 @@ public class Monsters : MonoBehaviour
         sr = GetComponent<SpriteRenderer>();
         Physics2D.IgnoreLayerCollision(LayerMask.NameToLayer("Monster"), LayerMask.NameToLayer("Monster"), true);
         monsterAttack = GetComponent<Attack>();
+
+        //SpriteRenderer spriteRenderer = instance.GetComponent<SpriteRenderer>();
+        originalScale = transform.localScale;
 
         if (monstersStats == null)
         {
@@ -83,6 +97,10 @@ public class Monsters : MonoBehaviour
             return;
         }
 
+        //监听
+        monstersStats.OnDeath += OnMonsterDeath;
+
+
     }
 
     private void Start()
@@ -93,16 +111,17 @@ public class Monsters : MonoBehaviour
         lastDetectTime = Time.time;
 
         //初始化朝向
-        transform.localScale = new Vector3(monsterScale, monsterScale, 1);
+        //transform.localScale = new Vector3(monsterScale, monsterScale, 1);
 
         //初始化攻击时间
         lastAttackTime = -attackCD;
+
     }
 
 
     private void Update()
     {
-        if(monstersStats.isDead || (playerStats != null && playerStats.isDead))
+        if (monstersStats.isDead || (playerStats != null && playerStats.isDead))
         {
             return;
         }
@@ -241,8 +260,8 @@ public class Monsters : MonoBehaviour
         }
 
         //计算新的缩放： 保留y,z不变  x轴 = 方向*基础缩放
-        float newScaleX = Mathf.Sign(moveDirectionX) * monsterScale;
-        transform.localScale = new Vector3(newScaleX, monsterScale, 1);
+        float newScaleX = Mathf.Sign(moveDirectionX) * originalScale.x;
+        transform.localScale = new Vector3(newScaleX, originalScale.y, 1);
 
     }
 
@@ -253,8 +272,8 @@ public class Monsters : MonoBehaviour
 
     private void AttackPlayer()
     {
-        float distanceToPlayer = Vector2.Distance(transform.position , player.position);
-        if(distanceToPlayer > monsterAttack.attackRange)
+        float distanceToPlayer = Vector2.Distance(transform.position, player.position);
+        if (distanceToPlayer > monsterAttack.attackRange)
         {
             return;
         }
@@ -281,4 +300,71 @@ public class Monsters : MonoBehaviour
 
 
     #endregion
+
+
+    #region 怪物阵亡掉落
+    private void OnMonsterDeath()
+    {
+        if (itemOnWorldPrefabs == null || dropItem == null)
+        {
+            Debug.LogWarning($"{gameObject.name}未配置掉落预设体/掉落物品，跳过掉落");
+            return;
+        }
+
+        float randomValue = Random.Range(0f, 100f);
+        if (randomValue <= dropRate)
+        {
+            try
+            {
+                Vector3 dropPos = transform.position + new Vector3(dropOffset.x, dropOffset.y, 0);
+
+                GameObject dropObj = Instantiate(itemOnWorldPrefabs, dropPos, Quaternion.identity);
+                ItemOnWorld itemComp = dropObj.GetComponent<ItemOnWorld>();
+                SpriteRenderer dropsr =dropObj.GetComponent<SpriteRenderer>();
+                if (itemComp != null)
+                {
+                    itemComp.item = dropItem;
+                    //itemComp.item = dropItem;
+                    // 新增：设置掉落物贴图
+                    
+                }
+               
+                if(dropsr != null)
+                {
+                    if(dropItem.icon != null)
+                    {
+                        dropsr.sprite = dropItem.icon;
+                    }
+                    else
+                    {
+                        Debug.LogWarning($"{dropItem.name} 未设置itemIcon图标！");
+                    }
+                    
+
+                }
+                else
+                {
+                    Debug.LogWarning($"{itemOnWorldPrefabs.name} 预设体未挂载SpriteRenderer组件，无法显示贴图！");
+                }
+                Debug.Log($"{gameObject.name}阵亡，触发掉落！生成物品：{dropItem.name}");
+            }
+            catch (System.Exception e)
+            {
+                Debug.LogError($"掉落生成失败：{e.Message}");  
+                // 即使掉落失败，也不影响怪物销毁
+            }
+
+        }
+        else
+        {
+            Debug.Log($"{gameObject.name}阵亡，掉落失败（概率{dropRate}%，随机数{randomValue:F1}）");
+
+        }
+
+    }
+
+
 }
+
+    #endregion
+
