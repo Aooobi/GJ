@@ -123,6 +123,12 @@ public class CharacterStats : MonoBehaviour
     public rareLevel nowRareLevel;
     #endregion
 
+    #region 区域解锁
+    [Header("解锁区域")]
+    public int unlockArea = 0;
+
+    #endregion
+
     //开始游戏
     private void Start()
     {
@@ -484,14 +490,20 @@ public class CharacterStats : MonoBehaviour
             {
                 rb.velocity = Vector2.zero;
             }
-            Destroy(gameObject, 0.5f); //延迟销毁 方便放死亡动画
+            //Destroy(gameObject, 0.5f); //延迟销毁 方便放死亡动画
             Debug.Log("玩家阵亡！");
-            //之后来补充
-            
+            RPG playerRPG = GetComponent<RPG>();
+            if(playerRPG != null)
+            {
+                playerRPG.OnPlayerDead();
 
+            }
+            else
+            {
+                Debug.LogError("玩家身上未挂载RPG脚本，无法触发复活逻辑！");
 
-
-
+            }
+            Debug.Log("玩家阵亡，开始执行复活逻辑...");
 
         }
         else if(gameObject.CompareTag("Monster"))
@@ -544,7 +556,21 @@ public class CharacterStats : MonoBehaviour
 
     }
 
-
+    //献祭
+    public bool SacrificeSparks()
+    {
+        if(currentSparks < 1)
+        {
+            Debug.Log("花火值不足，无法献祭解锁区域！");
+            return false;
+        }
+        currentSparks -= 1;
+        unlockArea += 1;
+        Debug.Log($"献祭成功！花火剩余{currentSparks}，区域解锁层数提升至{unlockArea}");
+        return true;
+    }
+   
+    
 
 
 }
