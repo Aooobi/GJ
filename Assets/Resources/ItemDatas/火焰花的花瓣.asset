@@ -1,0 +1,29 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 884f397e44b919547b288d0c21afb7a9, type: 3}
+  m_Name: "\u706B\u7130\u82B1\u7684\u82B1\u74E3"
+  m_EditorClassIdentifier: 
+  id: Consumables_1
+  name: "\u706B\u7130\u82B1\u7684\u82B1\u74E3"
+  icon: {fileID: 0}
+  description: "\u6BCF\u5929\u6751\u5E84\u7761\u89C9\u8D77\u6765\u540E\u4FBF\u4F1A\u8865\u5145\u7684\u82B1\u74E3\uFF0C\u73A9\u5BB6\u53EF\u4EE5\u7528\u6765\u53BB\u732E\u796D\u795E\u50CF\u83B7\u5F97\u5404\u7C7B\u7269\u54C1"
+  maxStack: 25
+  itemHeld: 1
+  itemType: 3
+  additionalData: {fileID: 0}
+  functionScript: {fileID: 0}
+  damage: 0
+  health: 0
+  function: 
+  Duration: 0
+  Speed: 0
+  Defense: 0

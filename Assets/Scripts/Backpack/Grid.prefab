@@ -228,3 +228,6 @@ MonoBehaviour:
   itemOnslot: {fileID: 0}
   slotImage: {fileID: 1553757495680247200}
   Number: {fileID: 6162500936488550002}
+  rightClickMenuPrefab: {fileID: 4861975664817671692, guid: 5e81b79c421e91e439243febbf98abdc, type: 3}
+  contextMenuBgSprite: {fileID: 21300000, guid: 8995e63ec7e7e4843b19ee603dc2a6b1, type: 3}
+  buttonNormalSprite: {fileID: 21300000, guid: dd0e9d0d872dd4d009bcb6bde72e2e60, type: 3}
