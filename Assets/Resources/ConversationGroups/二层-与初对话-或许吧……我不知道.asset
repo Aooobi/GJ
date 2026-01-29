@@ -17,6 +17,6 @@ MonoBehaviour:
   - SpeakerName: "\u521D"
     Content: "\uFF08\u5931\u671B\u800C\u6124\u6012\u7684\u671B\u7740\u706B\u7130\u82B1\u74E3\uFF09"
   NextGroup:
-  - {fileID: 0}
+  - {fileID: 11400000, guid: 77369f0413f48d74684f45d350340d92, type: 2}
   NextGroupText:
   - "\u6211\u7684\u82B1\u74E3\u4E5F\u51CF\u5C11\u4E86"
