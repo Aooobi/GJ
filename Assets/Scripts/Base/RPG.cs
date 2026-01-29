@@ -617,19 +617,27 @@ public class RPG : MonoBehaviour
             if (monsterParent == null)
             { 
              return;
-            } 
-            // 倒序销毁，避免索引错乱
-            for (int i = monsterParent.childCount - 1; i >= 0; i--)
-            {
-                Destroy(monsterParent.GetChild(i).gameObject);
             }
+
+            MonsterSpawner spawner = monsterParent.GetComponent<MonsterSpawner>();
+            if (spawner != null)
+            {
+                spawner.RefreshMonsters();
+            }
+            else
+            {
+            Debug.LogError("MonsterParent 上没有挂载 MonsterSpawner 脚本", this);
         }
 
 
-        #endregion
 
-        #region 重置天数
-        private void ResetGameDay()
+    }
+
+
+    #endregion
+
+    #region 重置天数
+    private void ResetGameDay()
         {
             gameTimeEvent.ResetGameDay();
         }
