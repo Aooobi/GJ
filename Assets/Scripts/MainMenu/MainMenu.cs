@@ -29,4 +29,10 @@ public class MainMenu : MonoBehaviour
             isConfigOpen = false;
         }
     }
+
+    public void QuitGame()
+    {
+        Debug.Log("Quit Game button clicked!");
+        Application.Quit();
+    }
 }
