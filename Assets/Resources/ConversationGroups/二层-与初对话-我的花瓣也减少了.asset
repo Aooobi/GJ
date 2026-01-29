@@ -15,6 +15,8 @@ MonoBehaviour:
   GroupName: "\u4E8C\u5C42-\u4E0E\u521D\u5BF9\u8BDD-\u6211\u7684\u82B1\u74E3\u4E5F\u51CF\u5C11\u4E86"
   Conversations:
   - SpeakerName: "\u521D"
-    Content: "\u597D\u5427\u2026\u2026\u6211\u77E5\u9053\u4E86\u2026\u2026"
+    Content: "\u6211\u5F53\u7136\u77E5\u9053\u2026\u2026"
+  - SpeakerName: "\u521D"
+    Content: "\u73B0\u5728\u8BA9\u6211\u9759\u9759\u2026\u2026\u597D\u5417\uFF1F"
   NextGroup: []
   NextGroupText: []

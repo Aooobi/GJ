@@ -48,7 +48,7 @@ public class NPCConversationTrigger : MonoBehaviour
     {
         if (canInteract)
         {
-            Input.GetKeyDown(KeyCode.F);
+            if(Input.GetKeyDown(KeyCode.F))
             {
                 ConversationManager.instance.LoadConversationByName(conversationName, black_or_not);
                 canInteract = false;
