@@ -24,7 +24,8 @@ public class ItemOnWorld : MonoBehaviour
             if (item.itemHeld < item.maxStack) {
                 item.itemHeld += 1;
             }
-            else {
+            else 
+            {
                 print("物品已满");
             }
         }

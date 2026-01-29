@@ -1,0 +1,25 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: cf220b45eac5b0c40ba93669d26e115c, type: 3}
+  m_Name: "\u4E00\u5C42-\u4E0E\u5F17\u6069\u5BF9\u8BDD-\u53D1\u751F\u4E86\u4EC0\u4E48"
+  m_EditorClassIdentifier: 
+  GroupName: "\u4E00\u5C42-\u4E0E\u8D39\u6069\u5BF9\u8BDD-\u53D1\u751F\u4E86\u4EC0\u4E48"
+  Conversations:
+  - SpeakerName: "\u5F17\u6069"
+    Content: "\u8FD9\u91CC\u672C\u6765\u4E00\u7247\u7EFF\u8272\u7965\u548C\uFF0C\u4F46\u5F53\u795E\u50CF\u51FA\u73B0\u7684\u65F6\u5019\uFF0C\u4E00\u5207\u90FD\u53D8\u4E86\u2026\u2026"
+  - SpeakerName: "\u5F17\u6069"
+    Content: "\u4F46\u6211\u4EEC\u6709\u53D6\u4E4B\u4E0D\u5C3D\u7528\u4E4B\u4E0D\u7AED\u7684\u98DF\u7269\uFF0C\u8C01\u4F1A\u5728\u610F\u90A3\u4E9B\u53D8\u5F97\u6EDA\u70EB\u7684\u82B1\u9E1F\u9C7C\u866B\uFF1F"
+  NextGroup: []
+  NextGroupText:
+  - "\u53D1\u751F\u4E86\u4EC0\u4E48\uFF1F"
+  - 
+  - 
