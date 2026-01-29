@@ -99339,6 +99339,9 @@ MonoBehaviour:
   OnSleepRefreshNextDay:
     m_PersistentCalls:
       m_Calls: []
+  OnSleepRefreshMonster:
+    m_PersistentCalls:
+      m_Calls: []
   startDay: 1
 --- !u!1 &975286203
 GameObject:
@@ -102399,7 +102402,7 @@ Animator:
   m_GameObject: {fileID: 1401600151}
   m_Enabled: 1
   m_Avatar: {fileID: 0}
-  m_Controller: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: 150928c8fc688d24586653a9fe85349d, type: 2}
   m_CullingMode: 0
   m_UpdateMode: 0
   m_ApplyRootMotion: 0
@@ -102442,8 +102445,8 @@ CapsuleCollider2D:
   m_IsTrigger: 0
   m_UsedByEffector: 0
   m_UsedByComposite: 0
-  m_Offset: {x: 0, y: 0}
-  m_Size: {x: 1, y: 2}
+  m_Offset: {x: -0.56975937, y: -1.085257}
+  m_Size: {x: 0.7286835, y: 1.8263593}
   m_Direction: 0
 --- !u!50 &1401600155
 Rigidbody2D:
@@ -102513,7 +102516,7 @@ SpriteRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 1
-  m_Sprite: {fileID: -9095717837082945937, guid: 207ee8102dd4143d288186ef0be518ee, type: 3}
+  m_Sprite: {fileID: 21300000, guid: e4e2c70087f3a974e929ea971bc4f4d2, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
@@ -102543,6 +102546,8 @@ MonoBehaviour:
   backpackPanel: {fileID: 871550734}
   fireBallSprite: {fileID: 0}
   characterSprite: {fileID: 0}
+  villageRelifePoint: {fileID: 0}
+  monsterParent: {fileID: 0}
 --- !u!1 &1428191417
 GameObject:
   m_ObjectHideFlags: 0
