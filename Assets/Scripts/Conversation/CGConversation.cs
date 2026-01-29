@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -10,9 +11,13 @@ public class CGConversation : MonoBehaviour
 
     public GameObject pingtai;
 
+    public Action OnConversationOver;
+
     void Start()
     {
-        
+        OnConversationOver += () => {
+            CloseBlack();
+        };
     }
 
     public void LoadConversation()
@@ -22,6 +27,10 @@ public class CGConversation : MonoBehaviour
     public void OpenBlack()
     {
         PureBlack.gameObject.SetActive(true);
+    }
+    public void CloseBlack()
+    {
+        PureBlack.gameObject.SetActive(false);
     }
     public void CloseCG()
     {

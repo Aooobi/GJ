@@ -747,14 +747,28 @@ AnimationClip:
     floatParameter: 0
     intParameter: 0
     messageOptions: 0
-  - time: 12.2
+  - time: 10.2
+    functionName: Stop1BGM
+    data: 
+    objectReferenceParameter: {fileID: 0}
+    floatParameter: 0
+    intParameter: 0
+    messageOptions: 0
+  - time: 12.35
     functionName: LoadConversation
     data: 
     objectReferenceParameter: {fileID: 0}
     floatParameter: 0
     intParameter: 0
     messageOptions: 0
-  - time: 12.483334
+  - time: 12.983334
+    functionName: OpenBlack
+    data: 
+    objectReferenceParameter: {fileID: 0}
+    floatParameter: 0
+    intParameter: 0
+    messageOptions: 0
+  - time: 13.35
     functionName: CloseCG
     data: 
     objectReferenceParameter: {fileID: 0}
