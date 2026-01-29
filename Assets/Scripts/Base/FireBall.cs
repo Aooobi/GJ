@@ -11,12 +11,23 @@ public class FireBall : MonoBehaviour
     [SerializeField] public float shootspeed = 8f;//火球速度
     [SerializeField] public float maxDistance = 10f;//最大飞行距离
     [SerializeField] private float fireBallDamage = 20f; //火球默认伤害
-  
+
+    [Header("火球大小")]
+    private Vector3 fireBallScale = new Vector3(10f, 10f, 1f); // 固定放大2倍（可直接改数值）
+    private float colliderRadius = 0.8f; // 固定碰撞体半径（和缩放匹配） 
+
     private Rigidbody2D rb;
     private Vector3 startPos;//发射起始位置
     private CharacterStats playerStats; //玩家属性脚本 取重攻击伤害
+    private SpriteRenderer sr; 
     private void Awake()
     {
+        // 新增：获取/添加精灵组件，设置火球缩放（核心放大逻辑）
+        sr = GetComponent<SpriteRenderer>();
+        if (sr != null)
+        {
+            transform.localScale = fireBallScale; //直接设置火球缩放，可视化调整
+        }
         rb = GetComponent<Rigidbody2D>();
         if(rb == null)
         {
@@ -30,7 +41,7 @@ public class FireBall : MonoBehaviour
         {
             CircleCollider2D circleCol = gameObject.AddComponent<CircleCollider2D>();
             circleCol.isTrigger = true;
-            circleCol.radius = 0.2f; //设置半径 
+            circleCol.radius = colliderRadius; //设置半径 
 
         }
 

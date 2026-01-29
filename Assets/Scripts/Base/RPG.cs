@@ -1,12 +1,19 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 /// <summary>
 /// 人物操作控制脚本  衡玉
 /// </summary>
 public class RPG : MonoBehaviour 
 {
+    [Header("交互提示")]
+    [SerializeField] private GameObject textPrefab; 
+    [SerializeField] private Canvas mainCanvas;     
+    [SerializeField] private float tipYOffset = 2f; 
+    private GameObject currentInteractTip;          
+
     private CharacterStats characterStats;
     private Attack attackSystem; //引用攻击脚本
     [Header("初始属性设置")]
@@ -488,12 +495,14 @@ public class RPG : MonoBehaviour
         if (other.CompareTag("Bed"))
         {
             isCanSleep = true;
-            Debug.Log("靠近床，可以睡觉(这个文本框还没做)");
+            Debug.Log("靠近床，可以睡觉");
+            ShowInteractTip(other.transform);
         }
         else if (other.CompareTag("GodStatue"))
         {
             isInGodStatueRange = true;
             Debug.Log("靠近特殊神像，按F献祭花火解锁区域！");
+            ShowInteractTip(other.transform);
 
         }
 
@@ -504,12 +513,13 @@ public class RPG : MonoBehaviour
         {
             isCanSleep = false;
             Debug.Log("离开床，不能睡觉");
+            HideInteractTip();
 
         }
         else if (other.CompareTag("GodStatue"))
         {
             isInGodStatueRange = false;
-
+            HideInteractTip();
         }
 
     }
@@ -556,12 +566,68 @@ public class RPG : MonoBehaviour
     }
     #endregion
 
-    
+    #region 交互提示
+    private void ShowInteractTip(Transform targetTrans)
+    {
+        if (textPrefab == null || mainCanvas == null || currentInteractTip != null)
+        {
+            return;
+        }
+        // 实例化提示文本，挂到Canvas下
+        GameObject textObj = Instantiate(textPrefab, mainCanvas.transform);
+        textObj.name = "InteractTipText";
+
+        Vector3 worldPos = targetTrans.position + new Vector3(0, tipYOffset, 0);
+
+        RectTransform textRect = textObj.GetComponent<RectTransform>();
+        if (textRect == null)
+        {
+            Debug.LogError("textPrefab缺少RectTransform组件！和NPC的预设保持一致");
+            Destroy(textObj);
+            return;
+        }
+        Vector2 screenPos;
+        if (RectTransformUtility.ScreenPointToLocalPointInRectangle(
+            mainCanvas.GetComponent<RectTransform>(),
+            Camera.main.WorldToScreenPoint(worldPos),
+            mainCanvas.worldCamera,
+            out screenPos))
+        {
+            textRect.anchoredPosition = screenPos;
+        }
+        else
+        {
+            Debug.LogError("坐标转换失败，和NPC的Canvas配置保持一致！");
+            Destroy(textObj);
+            return;
+        }
+
+        currentInteractTip = textObj;
+        // 自动销毁（和NPC一致，3秒后消失，也可以改成离开时销毁）
+        Destroy(textObj, 3f);
+    }
+
+    private void HideInteractTip()
+    {
+        if (currentInteractTip != null)
+        {
+            Destroy(currentInteractTip);
+            currentInteractTip = null; // 置空，方便下次显示
+        }
+    }
+
+    private void OnDestroy()
+    {
+        HideInteractTip();
+    }
+
+    #endregion
+
     #endregion
 
 
     #region 复活逻辑
-        public void OnPlayerDead()
+    public void OnPlayerDead()
         {
             StopPlayerMovement();
             //调用渐隐渐显
