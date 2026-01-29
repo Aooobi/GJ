@@ -23,9 +23,13 @@ public class ItemBase : ScriptableObject
 
     public ItemAdditionalData additionalData;
     public MonoBehaviour functionScript;
-    public int damage;
-    public int health;
+    public float damage;
+    public float health;
     [TextArea]
     public string function;
+    public int Duration;
+    public float Speed;
+    public float Defense;
+    
 
 }

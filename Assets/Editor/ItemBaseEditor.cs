@@ -5,7 +5,8 @@ using UnityEditor;
 public class ItemBaseEditor : Editor {
 
     private SerializedObject itemObject;//序列化对象
-    private SerializedProperty id, nameProp, icon, description, maxStack, itemHeld, itemType, damage, health, function, additionalData, functionScript;//定义各种属性
+    private SerializedProperty id, nameProp, icon, description, maxStack, itemHeld, itemType, damage, health,
+ function, additionalData, functionScript, Duration, Speed, Defense;//定义各种属性
 
     void OnEnable()
     {
@@ -22,6 +23,9 @@ public class ItemBaseEditor : Editor {
         function = itemObject.FindProperty("function");
         additionalData = itemObject.FindProperty("additionalData");
         functionScript = itemObject.FindProperty("functionScript");
+        Duration = itemObject.FindProperty("Duration");
+        Speed = itemObject.FindProperty("Speed");
+        Defense = itemObject.FindProperty("Defense");
     }
 
     public override void OnInspectorGUI()
@@ -40,7 +44,12 @@ public class ItemBaseEditor : Editor {
 
         // 根据选择的枚举类型显示不同的字段
         if (itemType.enumValueIndex == (int)ItemBase.ItemType.饰品) { // 饰品显示血量
-            EditorGUILayout.PropertyField(health, new GUIContent("血量"));
+            EditorGUILayout.PropertyField(health, new GUIContent("血量增减"));
+			EditorGUILayout.PropertyField(damage, new GUIContent("伤害增减"));
+        	EditorGUILayout.PropertyField(Defense, new GUIContent("防御增减"));
+        	EditorGUILayout.PropertyField(Speed, new GUIContent("速度加成"));
+        	EditorGUILayout.PropertyField(Duration, new GUIContent("效果持续时间"));
+        	EditorGUILayout.PropertyField(function, new GUIContent("功能"));
         }
         else if (itemType.enumValueIndex == (int)ItemBase.ItemType.武器) { // 武器显示伤害
             EditorGUILayout.PropertyField(damage, new GUIContent("伤害"));
@@ -49,7 +58,12 @@ public class ItemBaseEditor : Editor {
             EditorGUILayout.PropertyField(function, new GUIContent("功能"));
         }
         else if (itemType.enumValueIndex == (int)ItemBase.ItemType.消耗品) { // 消耗品显示功能
-            EditorGUILayout.PropertyField(function, new GUIContent("功能"));
+            EditorGUILayout.PropertyField(health, new GUIContent("血量增减"));
+			EditorGUILayout.PropertyField(damage, new GUIContent("伤害增减"));
+        	EditorGUILayout.PropertyField(Defense, new GUIContent("防御增减"));
+        	EditorGUILayout.PropertyField(Speed, new GUIContent("速度加成"));
+        	EditorGUILayout.PropertyField(Duration, new GUIContent("效果持续时间"));
+        	EditorGUILayout.PropertyField(function, new GUIContent("功能"));
         }
         // 其他类型不显示额外内容
         

@@ -4,7 +4,8 @@ using UnityEngine;
 
 public class BGMManager : MonoBehaviour
 {
-    // Start is called before the first frame update
+    public AudioSource BGM;
+
     void Start()
     {
         

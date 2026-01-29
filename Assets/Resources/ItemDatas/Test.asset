@@ -24,3 +24,6 @@ MonoBehaviour:
   damage: 0
   health: 0
   function: 
+  Duration: 0
+  Speed: 0
+  Defense: 0
