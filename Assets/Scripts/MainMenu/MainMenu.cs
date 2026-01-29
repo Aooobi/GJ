@@ -1,3 +1,4 @@
+using DG.Tweening;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -5,6 +6,9 @@ using UnityEngine.SceneManagement;
 
 public class MainMenu : MonoBehaviour
 {
+    public RectTransform ConfigPanel;
+
+    private bool isConfigOpen = false;
     public void StartGame()
     {
         SceneManager.LoadScene("DemoScene");
@@ -12,8 +16,17 @@ public class MainMenu : MonoBehaviour
         // Add logic to start the game, e.g., load the first level
     }
 
-    public void OpenConfig()
+    public void OpenOrCloseConfig()
     {
-        
+        if (!isConfigOpen)
+        {
+            ConfigPanel.DOAnchorPosX(-444, 0.5f);
+            isConfigOpen = true;
+        }
+        else
+        {
+            ConfigPanel.DOAnchorPosX(444, 0.5f);
+            isConfigOpen = false;
+        }
     }
 }
