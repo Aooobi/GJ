@@ -5,7 +5,7 @@ using UnityEngine;
 /// <summary>
 /// 人物操作控制脚本  衡玉
 /// </summary>
-public class RPG : MonoBehaviour , TalkOperation
+public class RPG : MonoBehaviour 
 {
     private CharacterStats characterStats;
     private Attack attackSystem; //引用攻击脚本
@@ -486,7 +486,7 @@ public class RPG : MonoBehaviour , TalkOperation
     #endregion
 
     #region 对话锁定实现接口
-    public void LockPlayerOperation()
+    public void StopPlayerMovement()
     {
         if(isPlayerLocked)
         {
@@ -502,7 +502,7 @@ public class RPG : MonoBehaviour , TalkOperation
     
     }
 
-    public void ResumePlayerOperation()
+    public void StartPlayerMovement()
     {
         if(isPlayerLocked==false)
         {
