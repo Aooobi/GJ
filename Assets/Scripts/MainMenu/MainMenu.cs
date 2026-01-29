@@ -14,6 +14,8 @@ public class MainMenu : MonoBehaviour
         SceneManager.LoadScene("DemoScene");
         Debug.Log("Start Game button clicked!");
         // Add logic to start the game, e.g., load the first level
+
+        AudioManager.Instance.PlayBGM("ª®ª’ÚBGM");
     }
 
     public void OpenOrCloseConfig()
