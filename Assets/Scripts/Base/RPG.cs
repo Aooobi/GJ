@@ -5,7 +5,7 @@ using UnityEngine;
 /// <summary>
 /// 人物操作控制脚本  衡玉
 /// </summary>
-public class RPG : MonoBehaviour
+public class RPG : MonoBehaviour 
 {
     private CharacterStats characterStats;
     private Attack attackSystem; //引用攻击脚本
@@ -25,12 +25,21 @@ public class RPG : MonoBehaviour
 
     private bool BP_Open = false;
 
+    private Animator anim;
+
+    private Vector3 originalScale;
+
+    private bool isCanSleep = false;
+
+    private bool isPlayerLocked = false;
 
     [Header("初始火球贴图")]
     [SerializeField] private Sprite fireBallSprite;
 
     [Header("人物贴图")]
     [SerializeField] private Sprite characterSprite;
+
+    
 
 
     //组件引用 2d？
@@ -40,6 +49,7 @@ public class RPG : MonoBehaviour
     //状态变量
     private bool isGrounded; //区分跳跃和行走 //注意之后tag问题
     private float horizontalInput;
+    private float moveInput; //动画判断组件
 
 
     //设置初始值，初始化
@@ -47,6 +57,8 @@ public class RPG : MonoBehaviour
     {
         rb = GetComponent<Rigidbody2D>();
         sr = GetComponent<SpriteRenderer>();
+        attackSystem = GetComponent<Attack>();
+        originalScale = transform.localScale;
 
         if(characterSprite != null)
         {
@@ -56,7 +68,7 @@ public class RPG : MonoBehaviour
         //float baseScale = 8f;
         //transform.localScale = new Vector3(Mathf.Sign(transform.localScale.x) * baseScale, baseScale, 1);
 
-
+        
 
         characterStats = GetComponent<CharacterStats>(); //把基础属性面板上的数值放进来
         if(characterStats == null)
@@ -87,18 +99,42 @@ public class RPG : MonoBehaviour
 
     private void Start()
     {
-        
+        anim = GetComponent<Animator>();
     }
 
     private void Update()
     {
         horizontalInput = Input.GetAxis("Horizontal"); //-1左 0不动 1右
+		moveInput = Input.GetAxisRaw("Horizontal");
+
+        if (moveInput == 0) {
+			anim.ResetTrigger("move");
+			anim.SetBool("isWalking", false);
+		}
+		else {
+			anim.SetTrigger("move");
+			//根据玩家速度属性判断走还是跑，逻辑等待实现
+			//
+			//
+			//根据玩家速度属性判断走还是跑，逻辑等待实现
+			anim.SetBool("isWalking", true);
+		}
 
         //跳跃
         if(Input.GetKeyDown(KeyCode.Space))
         {
-            if(isGrounded)
-             Jump();
+            if(isGrounded) {
+				Jump();
+				anim.SetTrigger("Jump");
+			}
+
+            if(!isGrounded) {
+				anim.SetBool("isJumping", true);
+			}
+			else {
+				anim.SetBool("isJumping", false);
+			}
+			
 
         }
 
@@ -107,6 +143,7 @@ public class RPG : MonoBehaviour
         {
             //轻攻击
             LightAttack();
+			anim.SetTrigger("LAtt");
 
         }
 
@@ -114,6 +151,7 @@ public class RPG : MonoBehaviour
         if(Input.GetMouseButtonDown(1))
         {
             HeavyAttack();
+			anim.SetTrigger("HAtt");
 
         }
 
@@ -141,7 +179,7 @@ public class RPG : MonoBehaviour
         //F技能
         if(Input.GetKeyDown(KeyCode.F))
         {
-            SkillF();
+            PlayerInteract();
 
         }
 
@@ -154,12 +192,12 @@ public class RPG : MonoBehaviour
         if(mouseWorldPos.x < transform.position.x)
         {
             //鼠标在左侧 角色朝左
-            transform.localScale = new Vector3(-1,1,1);
+            transform.localScale = new Vector3(-originalScale.x, originalScale.y, 1);
         }
         else if(mouseWorldPos.x > transform.position.x)
         {
             //鼠标在右侧 角色朝右
-            transform.localScale = new Vector3(1,1,1);
+            transform.localScale = new Vector3(originalScale.x, originalScale.y, 1);
         }
 
 
@@ -179,6 +217,10 @@ public class RPG : MonoBehaviour
     #region 移动逻辑
     private void Move()
     {
+        if(isPlayerLocked)
+        {
+            return;
+        }
         rb.velocity = new Vector2(horizontalInput * characterStats.moveSpeed, rb.velocity.y);
        // Debug.Log("Horizontal Input: " + horizontalInput);
         //角色翻转
@@ -195,6 +237,10 @@ public class RPG : MonoBehaviour
     #region 跳跃逻辑
     private void Jump()
     {
+        if(isPlayerLocked)
+        {
+            return;
+        }
         float currentJumpHeight = characterStats.jumpHeight;
         rb.velocity = new Vector2(rb.velocity.x, currentJumpHeight);//x为跳跃前的movespeed
         isGrounded = false; //之后velocity会逐渐减少括号内的数值
@@ -239,9 +285,13 @@ public class RPG : MonoBehaviour
         #endregion
 
 
-         #region 轻攻击方法
+        #region 轻攻击方法
          private void LightAttack()
          {
+            if(isPlayerLocked)
+            {
+                return;
+            }
             float currentCD = GetAttackCD();
             if(Time.time - lastLATime < currentCD)
              {
@@ -256,15 +306,23 @@ public class RPG : MonoBehaviour
                 attackSystem.isAttack(false);    
 
             }
-            Debug.Log($"释放轻攻击,当前攻速{characterStats.attackSpeed},剩余冷却时间：{currentCD}秒");
+            else
+            {
+                Debug.LogWarning("未获取到Attack攻击脚本，请检查是否挂载！");
+             }
+             Debug.Log($"释放轻攻击,当前攻速{characterStats.attackSpeed},剩余冷却时间：{currentCD}秒");
 
-          }
+         }
 
     #endregion
 
-    #region 重攻击方法
+        #region 重攻击方法
     private void HeavyAttack()
         {
+            if(isPlayerLocked)
+        {
+            return;
+        }
             float currentCD = GetAttackCD();
             //检查攻击冷却
             if(Time.time - lastHATime < currentCD)
@@ -328,11 +386,16 @@ public class RPG : MonoBehaviour
 
     #endregion
 
-        #region 技能F
-        private void SkillF()
+        #region F交互按键（睡觉/神像兑换）
+        private void PlayerInteract()
         {
-            Debug.Log("释放技能F");
+            if(isCanSleep)
+            {
+                PlayerDoSleep();
+                return;
+            }
 
+            Debug.Log("没有可交互的对象");
         }
         #endregion
 
@@ -348,26 +411,115 @@ public class RPG : MonoBehaviour
     #endregion
 
 
-
+    #region 火球建立
     public void CreateFireBall()
+        {
+            //动态创建空物体
+            GameObject fireBallObj = new GameObject("FireBall");
+            //设置火球位置 玩家位置 
+            fireBallObj.transform.position = transform.position + new Vector3(0.5f * transform.localScale.x, 0.5f, 0);
+            //继承玩家的缩放（保证和玩家的朝向一致）再乘以一个系数
+            //float fireBallScale = Mathf.Abs(transform.localScale.x) * 0.1f;
+            fireBallObj.transform.localScale = transform.localScale;
+            //fireBallObj.transform.localScale = new Vector3(Mathf.Sign(transform.localScale.x) * fireBallScale,fireBallScale,1);
+
+            //贴图核心
+            SpriteRenderer sr = fireBallObj.AddComponent<SpriteRenderer>();
+            sr.sprite = fireBallSprite;//赋值拖入的火球脚本
+            sr.sortingOrder = 10;//贴图层级置顶，不被遮挡
+
+
+            FireBall fireBallScript = fireBallObj.AddComponent<FireBall>();
+
+        }
+    #endregion
+
+
+    #region 场景交互
+
+    #region 靠近床睡觉
+    private void OnTriggerEnter2D(Collider2D other)
     {
-        //动态创建空物体
-        GameObject fireBallObj = new GameObject("FireBall");
-        //设置火球位置 玩家位置 
-        fireBallObj.transform.position = transform.position + new Vector3(0.5f * transform.localScale.x, 0.5f, 0);
-        //继承玩家的缩放（保证和玩家的朝向一致）再乘以一个系数
-        //float fireBallScale = Mathf.Abs(transform.localScale.x) * 0.1f;
-        fireBallObj.transform.localScale = transform.localScale;
-        //fireBallObj.transform.localScale = new Vector3(Mathf.Sign(transform.localScale.x) * fireBallScale,fireBallScale,1);
-
-        //贴图核心
-        SpriteRenderer sr = fireBallObj.AddComponent<SpriteRenderer>();
-        sr.sprite = fireBallSprite;//赋值拖入的火球脚本
-        sr.sortingOrder = 10;//贴图层级置顶，不被遮挡
-
-
-        FireBall fireBallScript = fireBallObj.AddComponent<FireBall>();
+        if(other.CompareTag("Bed"))
+        {
+            isCanSleep = true;
+            Debug.Log("靠近床，可以睡觉(这个文本框还没做)");
+        }
 
     }
+    private void OnTriggerExit2D(Collider2D other)
+    {
+        if(other.CompareTag("Bed"))
+        {
+            isCanSleep = false;
+            Debug.Log("离开床，不能睡觉");
+        }
+
+    }
+
+    private void PlayerDoSleep()
+    {
+        Debug.Log("开始睡觉,触发渐隐渐显");
+        UIFadeEffect.Instance.FadeOutAndFadeIn(
+            on_black: () =>
+            {
+                GameTimeEvent.Instance.SleepToNextDay();
+
+        if (bpExitScript != null)
+        {
+            bpExitScript.SlideInFromLeft(new Vector2(-305.5f, 0f));
+            BPEvent.Instance.OnInventoryStateChanged.Invoke(BP_Open);
+        }
+            },
+            on_complete: () =>
+            {
+                Debug.Log("睡醒，启程——");
+
+            },
+            active_panel_on_end: false
+    );
+    
+    
+    
+    
+    }
+    #endregion
+
+    #region 对话锁定实现接口
+    public void StopPlayerMovement()
+    {
+        if(isPlayerLocked)
+        {
+            return;
+        }
+        isPlayerLocked = true;
+        if(rb!=null)
+        {
+            rb.velocity = Vector2.zero;
+        }
+        
+        Debug.Log("操作已锁定");
+    
+    }
+
+    public void StartPlayerMovement()
+    {
+        if(isPlayerLocked==false)
+        {
+            return;
+        }
+        isPlayerLocked = false;
+        Debug.Log("操作已恢复");
+    
+    
+    }
+
+   
+
+
+    #endregion
+
+
+    #endregion
 
 }
