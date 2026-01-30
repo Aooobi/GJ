@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -49,6 +50,12 @@ public class BossMonster : MonoBehaviour
     [SerializeField, Range(0, 100)] private float dropRate = 80f; // BOSS掉落率建议提高
     [SerializeField] private Vector2 dropOffset = new Vector2(1f, 1f);
 
+
+    [Header("计时器技能")]
+    [SerializeField] private float interval = 1f; // 触发间隔（秒）
+    public Action OnTimerTriggered; // 定时触发的事件
+
+    private float timer;
     private void Awake()
     {
         // 获取核心组件
@@ -83,6 +90,32 @@ public class BossMonster : MonoBehaviour
 
         // 绑定死亡事件
         bossStats.OnDeath += OnBossDeath;
+
+
+        OnTimerTriggered += ()=>{
+            int v = UnityEngine.Random.Range(1, 5);
+            switch (v)
+            {
+                case 1:
+                    Debug.Log("BOSS计时器触发事件：咆哮！");
+                    GetComponent<Animator>().SetTrigger("attc");
+                    break;
+                case 2:
+                    Debug.Log("BOSS计时器触发事件：振奋！");
+                    GetComponent<Animator>().SetTrigger("attb");
+                    break;
+                case 3:
+                    Debug.Log("BOSS计时器触发事件：狂怒！");
+                    GetComponent<Animator>().SetTrigger("attl");
+                    break;
+                case 4:
+                    Debug.Log("");
+                    GetComponent<Animator>().SetTrigger("attr");
+                    break;
+                default:break;
+            }
+
+        };
     }
 
     private void Start()
@@ -93,6 +126,8 @@ public class BossMonster : MonoBehaviour
         lastMeleeAttackTime = -attackCD;
         lastFireBallTime = -fireBallCD; // 初始无冷却，可立即发射火球
         if (rb != null) rb.velocity = Vector2.zero;
+
+        timer = interval; // 第一次立即触发
     }
 
     private void Update()
@@ -129,6 +164,21 @@ public class BossMonster : MonoBehaviour
         {
             if (rb != null) rb.velocity = new Vector2(0, rb.velocity.y);
         }
+
+        //尽快i事情
+
+        // 使用 Time.deltaTime 累加时间
+        timer += Time.deltaTime;
+
+        // 检查是否达到触发间隔
+        if (timer >= interval)
+        {
+            // 触发事件
+            OnTimerTriggered?.Invoke();
+
+            // 重置计时器（保持余量，避免误差累积）
+            timer = 0f;
+        }
     }
 
     #region 基础移动：巡逻
@@ -155,7 +205,7 @@ public class BossMonster : MonoBehaviour
     {
         float minX = Mathf.Min(place1.position.x, place2.position.x);
         float maxX = Mathf.Max(place1.position.x, place2.position.x);
-        float randomX = Random.Range(minX, maxX);
+        float randomX = UnityEngine.Random.Range(minX, maxX);
         targetPoint = new Vector2(randomX, transform.position.y);
     }
     #endregion
@@ -303,7 +353,7 @@ public class BossMonster : MonoBehaviour
     {
         if (itemOnWorldPrefabs == null || dropItem == null) return;
         // 按掉落率生成物品
-        if (Random.Range(0, 100) <= dropRate)
+        if (UnityEngine.Random.Range(0, 100) <= dropRate)
         {
             Vector3 dropPos = transform.position + new Vector3(dropOffset.x, dropOffset.y, 0);
             GameObject dropObj = Instantiate(itemOnWorldPrefabs, dropPos, Quaternion.identity);

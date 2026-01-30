@@ -1533,6 +1533,10 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 398220839}
     - target: {fileID: 4751528960727349674, guid: 570824ddddbff3a458871e91ea939d38, type: 3}
+      propertyPath: monsterPrefab
+      value: 
+      objectReference: {fileID: 6259058817487750274, guid: 9b8432eaa2d9f7b44bff7eeefe75a761, type: 3}
+    - target: {fileID: 4751528960727349674, guid: 570824ddddbff3a458871e91ea939d38, type: 3}
       propertyPath: monsterPatrol1
       value: 
       objectReference: {fileID: 1679960674}
@@ -97691,7 +97695,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b21d302bc7887e147aacf9d875f42c13, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  maxHealth: 500
+  maxHealth: 200
   currentHealth: 0
   maxSparks: 3
   currentSparks: 3
@@ -97699,7 +97703,7 @@ MonoBehaviour:
   moveSpeed: 0
   baseJumpHeight: 10
   jumpHeight: 0
-  baseLightAttack: 0
+  baseLightAttack: 1
   baseHeavyAttack: 0
   lightAttack: 0
   heavyAttack: 0
@@ -97738,6 +97742,7 @@ MonoBehaviour:
   dropItem: {fileID: 0}
   dropRate: 80
   dropOffset: {x: 1, y: 1}
+  interval: 8
 --- !u!114 &445221575
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -97753,7 +97758,7 @@ MonoBehaviour:
   attackRange: 2
   targetLayer:
     serializedVersion: 2
-    m_Bits: 0
+    m_Bits: 128
   attackPoint: {fileID: 0}
 --- !u!1 &464688810
 GameObject:
@@ -99616,6 +99621,10 @@ PrefabInstance:
       propertyPath: spawnRight
       value: 
       objectReference: {fileID: 465074977}
+    - target: {fileID: 4751528960727349674, guid: 570824ddddbff3a458871e91ea939d38, type: 3}
+      propertyPath: monsterPrefab
+      value: 
+      objectReference: {fileID: 6259058817487750274, guid: 9b8432eaa2d9f7b44bff7eeefe75a761, type: 3}
     - target: {fileID: 4751528960727349674, guid: 570824ddddbff3a458871e91ea939d38, type: 3}
       propertyPath: monsterPatrol1
       value: 
@@ -109959,6 +109968,10 @@ PrefabInstance:
       propertyPath: spawnRight
       value: 
       objectReference: {fileID: 1378159270}
+    - target: {fileID: 4751528960727349674, guid: 570824ddddbff3a458871e91ea939d38, type: 3}
+      propertyPath: monsterPrefab
+      value: 
+      objectReference: {fileID: 6259058817487750274, guid: 36a83a40e605d9043b1f83d8f0a0299f, type: 3}
     - target: {fileID: 4751528960727349674, guid: 570824ddddbff3a458871e91ea939d38, type: 3}
       propertyPath: monsterPatrol1
       value: 
