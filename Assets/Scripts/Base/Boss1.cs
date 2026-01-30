@@ -3,229 +3,313 @@ using System.Collections.Generic;
 using UnityEngine;
 
 /// <summary>
-/// 第一个Boss脚本 - 火球技能（复用玩家火球逻辑）
-/// 核心：自动朝向玩家 + 间隔发射火球 + 继承属性脚本 + 复用检测逻辑
-/// 已移除Gizmos调试圈绘制
+/// BOSS怪物脚本 - 整合巡逻/追逐/近战攻击+定时远程火球攻击
+/// 预制体要求：挂载CharacterStats、Attack、Rigidbody2D、SpriteRenderer组件
 /// </summary>
-public class Boss01_FireBall : MonoBehaviour
+public class BossMonster : MonoBehaviour
 {
-    [Header("Boss基础配置")]
-    [SerializeField] private Sprite bossSprite; //Boss贴图
-    [SerializeField] private float bossScale = 6f; //Boss缩放（比普通怪物大）
-    [SerializeField] private LayerMask playerLayer; //玩家图层（用于检测）
+    [Header("=== 基础移动配置 ===")]
+    [SerializeField] public Transform place1; // 巡逻起点
+    [SerializeField] public Transform place2; // 巡逻终点
+    [SerializeField] private float moveSpeed = 1.5f; // 巡逻速度（BOSS建议比普通怪慢）
+    [SerializeField] private float chaseRange = 8f; // 追逐玩家范围（BOSS建议更大）
+    [SerializeField] private float chaseSpeed = 2.8f; // 追逐速度
+    [SerializeField] private float chaseBuffer = 1.5f; // 脱离追逐缓冲距离
+    private Vector2 targetPoint;
+    private bool isChasing = false;
 
-    [Header("Boss火球技能配置（和玩家重攻击火球一致）")]
-    [SerializeField] private Sprite fireBallSprite; //直接用玩家的火球贴图
-    [SerializeField] private float fireBallSkillCD = 3f; //火球技能冷却（比玩家长，合理难度）
-    [SerializeField] private float fireBallLaunchOffset = 1f; //火球发射偏移（避免贴脸生成）
-    [SerializeField] private float fireRange = 8f; //火球发射距离（离玩家多远开始放）
-    [SerializeField] private float fireBuffer = 1f; //发射缓冲（过近/过远都不发射）
+    [Header("=== 近战攻击配置 ===")]
+    [SerializeField] private float attackCD = 1.5f; // 近战攻击冷却（BOSS建议稍长）
+    [SerializeField] private bool useHeavyAttack = false; // 是否使用重击
+    private float lastMeleeAttackTime; // 最后一次近战攻击时间
 
-    [Header("Boss移动&检测配置")]
-    [SerializeField] private float detectRange = 10f; //检测玩家范围（比普通怪物大）
-    [SerializeField] private float moveSpeed = 2.5f; //Boss移动速度
-    [SerializeField] private float detectInterval = 0.2f; //检测间隔（优化性能）
+    [Header("=== 远程火球攻击配置【核心新增】===")]
+    [SerializeField] private float fireBallCD = 3f; // 火球发射间隔（固定时间，可调整）
+    [SerializeField] private int fireBallDamage = 5; // 火球基础伤害
+    [SerializeField] private Vector2 fireBallOffset = new Vector2(1f, 0.8f); // 火球发射偏移（适配BOSS体型）
+    [SerializeField] private float fireBallScale = 6f; // 火球大小
+    [SerializeField] private Sprite fireBallSprite; // 火球贴图（拖入和玩家火球一样的贴图即可）
+    private float lastFireBallTime; // 最后一次发射火球时间
 
-    [Header("Boss属性关联")]
-    [Tooltip("Boss火球伤害是否取自自身重攻击属性")]
-    public bool useBossHeavyAttack = true;
-
-    // 核心组件引用（全部复用现有脚本）
-    private CharacterStats bossStats; //Boss自身属性（血量/防御/重攻击伤害）
+    [Header("=== 基础配置 ===")]
+    [SerializeField] private string groundTag = "Ground";
+    private CharacterStats bossStats;
     private Rigidbody2D rb;
     private SpriteRenderer sr;
-    private Transform player; //玩家Transform
-    private CharacterStats playerStats; //玩家属性（检测玩家是否阵亡）
+    private Transform player;
+    private Attack bossAttack;
+    private float detectInterval = 0.2f;
+    private float lastDetectTime;
+    private bool isOnGround = false;
+    private Vector3 originalScale; // 保留BOSS原始体型，不自动缩放
 
-    // 状态变量
-    private float lastFireTime; //上次发射火球时间
-    private float lastDetectTime; //上次检测玩家时间
-    private Vector3 originalScale; //初始缩放（用于朝向翻转）
-    private bool isPlayerInRange; //玩家是否在检测范围内
+    [Header("=== 死亡掉落配置 ===")]
+    [SerializeField] private GameObject itemOnWorldPrefabs;
+    [SerializeField] private ItemBase dropItem;
+    [SerializeField, Range(0, 100)] private float dropRate = 80f; // BOSS掉落率建议提高
+    [SerializeField] private Vector2 dropOffset = new Vector2(1f, 1f);
 
     private void Awake()
     {
-        // 获取基础组件，和普通怪物逻辑一致
+        // 获取核心组件
         bossStats = GetComponent<CharacterStats>();
         rb = GetComponent<Rigidbody2D>();
         sr = GetComponent<SpriteRenderer>();
+        bossAttack = GetComponent<Attack>();
 
-        // 初始化检测
-        player = GameObject.FindGameObjectWithTag("Player")?.transform;
-        if (player != null)
-        {
-            playerStats = player.GetComponent<CharacterStats>();
-        }
-        else
-        {
-            Debug.LogError("场景中未找到Tag为Player的玩家对象！");
-        }
+        // 保留BOSS原始体型，不修改
+        originalScale = transform.localScale;
 
-        // 初始化缩放和贴图
-        originalScale = new Vector3(bossScale, bossScale, 1f);
-        transform.localScale = originalScale;
-        if (bossSprite != null && sr != null)
+        // 刚体配置（适配BOSS重量）
+        if (rb != null)
         {
-            sr.sprite = bossSprite;
+            rb.gravityScale = 2.5f;
+            rb.drag = 0;
+            rb.angularDrag = 0.05f;
+            rb.freezeRotation = true;
         }
 
-        // 忽略怪物层之间的碰撞（和普通怪物一致）
+        // 怪物之间忽略碰撞
         Physics2D.IgnoreLayerCollision(LayerMask.NameToLayer("Monster"), LayerMask.NameToLayer("Monster"), true);
 
-        // 监听Boss死亡事件
-        if (bossStats != null)
-        {
-            bossStats.OnDeath += OnBossDeath;
-        }
-        else
-        {
-            Debug.LogError("Boss未挂载CharacterStats属性脚本！");
-        }
+        // 组件校验（缺少则禁用脚本，避免报错）
+        if (bossStats == null) { Debug.LogError("BOSS缺少CharacterStats组件！", this); enabled = false; return; }
+        if (bossAttack == null) { Debug.LogError("BOSS缺少Attack组件！", this); enabled = false; return; }
+        if (fireBallSprite == null) { Debug.LogError("请为BOSS分配火球贴图！", this); enabled = false; return; }
 
-        // 初始化时间（让Boss开局就能放技能）
-        lastFireTime = -fireBallSkillCD;
+        // 查找玩家
+        player = GameObject.FindWithTag("Player")?.transform;
+        if (player == null) { Debug.LogError("场景中未找到Player标签的对象！", this); enabled = false; return; }
+
+        // 绑定死亡事件
+        bossStats.OnDeath += OnBossDeath;
+    }
+
+    private void Start()
+    {
+        // 初始化巡逻点、冷却时间
+        RandomPatrolPoint();
         lastDetectTime = Time.time;
+        lastMeleeAttackTime = -attackCD;
+        lastFireBallTime = -fireBallCD; // 初始无冷却，可立即发射火球
+        if (rb != null) rb.velocity = Vector2.zero;
     }
 
     private void Update()
     {
-        // 死亡判定：Boss/玩家阵亡则停止所有逻辑
-        if (bossStats.isDead || (playerStats != null && playerStats.isDead))
+        // 死亡/玩家为空时，停止所有行为
+        if (bossStats.isDead || player == null)
         {
-            rb.velocity = Vector2.zero;
+            if (rb != null) rb.velocity = Vector2.zero;
             return;
         }
 
-        // 性能优化：间隔检测玩家，不每一帧检测
+        // 定时检测玩家（避免每帧检测，优化性能）
         if (Time.time - lastDetectTime >= detectInterval)
         {
-            CheckPlayerInDetectRange();
+            CheckPlayerInRange();
             lastDetectTime = Time.time;
         }
 
-        // 玩家在范围内才执行后续逻辑（移动+发射火球）
-        if (isPlayerInRange && player != null)
+        // 地面检测：只有在地面才执行移动/攻击
+        if (isOnGround)
         {
-            // 自动朝向玩家
-            FlipToPlayer();
-            // 移动向玩家
-            MoveToPlayer();
-            // 检测距离并发射火球
-            FireBallToPlayer();
+            if (isChasing)
+            {
+                ChasePlayer(); // 追逐玩家
+                MeleeAttackPlayer(); // 近战攻击玩家
+            }
+            else
+            {
+                Patrol(); // 巡逻
+            }
+            FireBallAttack(); // 定时发射火球（无论巡逻/追逐，都自动发射）
         }
         else
         {
-            // 玩家不在范围内，停止移动
-            rb.velocity = Vector2.zero;
+            if (rb != null) rb.velocity = new Vector2(0, rb.velocity.y);
         }
     }
 
-    #region 核心逻辑1：检测玩家是否在范围内
-    private void CheckPlayerInDetectRange()
+    #region 基础移动：巡逻
+    private void Patrol()
     {
-        if (player == null) return;
+        if (place1 == null || place2 == null) return;
 
-        float distanceToPlayer = Vector2.Distance(transform.position, player.position);
-        // 检测范围：包含缓冲，避免频繁切换状态
-        isPlayerInRange = distanceToPlayer <= detectRange;
-    }
-    #endregion
+        // 朝向巡逻目标点
+        float dirX = Mathf.Sign(targetPoint.x - transform.position.x);
+        FlipBoss(dirX);
 
-    #region 核心逻辑2：自动朝向玩家（复用怪物翻转逻辑）
-    private void FlipToPlayer()
-    {
-        if (player == null) return;
+        // 巡逻移动
+        if (rb != null) rb.velocity = new Vector2(dirX * moveSpeed, rb.velocity.y);
 
-        // 计算朝向玩家的X方向
-        float dirX = player.position.x - transform.position.x;
-        if (dirX == 0) return;
-
-        // 翻转Boss：根据方向设置缩放X轴
-        float newScaleX = Mathf.Sign(dirX) * originalScale.x;
-        transform.localScale = new Vector3(newScaleX, originalScale.y, originalScale.z);
-    }
-    #endregion
-
-    #region 核心逻辑3：向玩家移动（匀速移动，无加速）
-    private void MoveToPlayer()
-    {
-        if (player == null) return;
-
-        // 计算朝向玩家的归一化方向（只走X轴，2D横向）
-        Vector2 moveDir = new Vector2(player.position.x - transform.position.x, 0).normalized;
-        // 移动：只改X轴速度，Y轴保持0（Boss不跳跃）
-        rb.velocity = new Vector2(moveDir.x * moveSpeed, 0);
-    }
-    #endregion
-
-    #region 核心逻辑4：发射火球（完全复用玩家CreateFireBall方法）
-    private void FireBallToPlayer()
-    {
-        if (player == null || fireBallSprite == null) return;
-
-        // 1. 技能冷却判定
-        if (Time.time - lastFireTime < fireBallSkillCD) return;
-
-        // 2. 发射距离判定：在[fireRange-fireBuffer, fireRange+fireBuffer]之间才发射
-        float distanceToPlayer = Vector2.Distance(transform.position, player.position);
-        if (distanceToPlayer < fireRange - fireBuffer || distanceToPlayer > fireRange + fireBuffer)
+        // 到达巡逻点，随机切换下一个点
+        if (Mathf.Abs(transform.position.x - targetPoint.x) < 0.5f)
         {
-            return;
+            RandomPatrolPoint();
         }
-
-        // 3. 复刻玩家CreateFireBall方法，生成火球
-        CreateBossFireBall();
-
-        // 4. 记录发射时间，触发冷却
-        lastFireTime = Time.time;
-        Debug.Log($"Boss发射火球！冷却{fireBallSkillCD}秒，下次发射时间：{lastFireTime + fireBallSkillCD}");
-
-        // 发射时停步（增加打击感）
-        rb.velocity = Vector2.zero;
     }
 
-    /// <summary>
-    /// Boss创建火球：完全复刻玩家RPG脚本的CreateFireBall方法
-    /// 仅修改：发射偏移、火球伤害取自Boss自身重攻击
-    /// </summary>
-    private void CreateBossFireBall()
+    // 随机生成巡逻点（在place1和place2之间）
+    private void RandomPatrolPoint()
     {
-        // 1. 创建火球游戏对象（和玩家一致）
-        GameObject fireBallObj = new GameObject("Boss_FireBall");
-        // 2. 设置火球生成位置：Boss位置 + 朝向偏移（避免贴脸生成）
-        float offsetX = transform.localScale.x > 0 ? fireBallLaunchOffset : -fireBallLaunchOffset;
-        fireBallObj.transform.position = transform.position + new Vector3(offsetX, 0.5f, 0);
-        // 3. 设置火球缩放（和玩家一致，保证朝向正确）
-        fireBallObj.transform.localScale = transform.localScale;
+        float minX = Mathf.Min(place1.position.x, place2.position.x);
+        float maxX = Mathf.Max(place1.position.x, place2.position.x);
+        float randomX = Random.Range(minX, maxX);
+        targetPoint = new Vector2(randomX, transform.position.y);
+    }
+    #endregion
 
-        // 4. 添加火球精灵组件（用和玩家一样的贴图）
+    #region 玩家检测：追逐/脱离追逐
+    private void CheckPlayerInRange()
+    {
+        float distance = Vector2.Distance(transform.position, player.position);
+        // 进入追逐范围，开始追逐
+        if (distance <= chaseRange) isChasing = true;
+        // 超出追逐范围+缓冲距离，脱离追逐
+        else if (distance > chaseRange + chaseBuffer) isChasing = false;
+    }
+    #endregion
+
+    #region 玩家追逐
+    private void ChasePlayer()
+    {
+        if (player == null || rb == null) return;
+
+        // 朝向玩家
+        float dirX = Mathf.Sign(player.position.x - transform.position.x);
+        FlipBoss(dirX);
+
+        // 追逐移动
+        rb.velocity = new Vector2(dirX * chaseSpeed, rb.velocity.y);
+    }
+    #endregion
+
+    #region 近战攻击：靠近玩家触发
+    private void MeleeAttackPlayer()
+    {
+        if (player == null || bossAttack == null) return;
+
+        // 近战攻击距离判定（BOSS体型大，距离稍远）
+        float attackDistance = 2.5f;
+        if (Vector2.Distance(transform.position, player.position) > attackDistance) return;
+
+        // 攻击冷却判定
+        if (Time.time - lastMeleeAttackTime < attackCD) return;
+
+        // 执行近战攻击
+        bossAttack.isAttack(useHeavyAttack);
+        Debug.Log($"【BOSS近战攻击】触发攻击，伤害：{fireBallDamage}");
+        lastMeleeAttackTime = Time.time;
+        if (rb != null) rb.velocity = Vector2.zero; // 攻击时停住
+    }
+    #endregion
+
+    #region 远程攻击：定时发射火球【核心新增】   
+    private void FireBallAttack()
+    {
+        // 火球冷却判定
+        if (Time.time - lastFireBallTime < fireBallCD) return;
+
+        // 生成火球（朝BOSS当前朝向）
+        CreateFireBall();
+        Debug.Log($"【BOSS火球攻击】发射火球，伤害：{fireBallDamage}");
+        lastFireBallTime = Time.time;
+    }
+
+    private void CreateFireBall()
+    {
+        // 1. 创建火球游戏对象
+        GameObject fireBallObj = new GameObject("BossFireBall");
+        // 火球发射位置：BOSS位置 + 偏移量（适配朝向）
+        Vector3 spawnPos = transform.position + new Vector3(
+            fireBallOffset.x * Mathf.Sign(transform.localScale.x),
+            fireBallOffset.y,
+            transform.position.z
+        );
+        fireBallObj.transform.position = spawnPos;
+        // 火球大小
+        fireBallObj.transform.localScale = new Vector3(fireBallScale, fireBallScale, 1);
+
+        // 2. 添加火球核心组件
         SpriteRenderer sr = fireBallObj.AddComponent<SpriteRenderer>();
         sr.sprite = fireBallSprite;
-        sr.sortingOrder = 10; //和玩家火球同一层级，避免遮挡
+        sr.sortingOrder = 10; // 层级高于BOSS，避免被遮挡
 
-        // 5. 添加火球核心脚本（复用现有FireBall脚本，关键！）
+        CircleCollider2D circleCol = fireBallObj.AddComponent<CircleCollider2D>();
+        circleCol.isTrigger = true; // 触发器，检测碰撞
+        circleCol.radius = 1f; // 碰撞范围
+
+        Rigidbody2D fireRb = fireBallObj.AddComponent<Rigidbody2D>();
+        fireRb.gravityScale = 0; // 火球无重力，直线飞行
+        fireRb.velocity = new Vector2(8f * Mathf.Sign(transform.localScale.x), 0); // 火球飞行速度（朝BOSS朝向）
+
+        // 3. 添加火球伤害脚本（复用原FireBall脚本，需保证场景中有该脚本）
         FireBall fireBallScript = fireBallObj.AddComponent<FireBall>();
+        fireBallScript.fireBallDamage = fireBallDamage; // 赋值火球伤害
 
-        // 6. 关键：如果开启Boss重攻击伤害，手动给火球赋值Boss的重攻击伤害
-        if (useBossHeavyAttack && bossStats != null)
+        // 4. 火球自动销毁（避免内存泄漏，5秒后销毁）
+        Destroy(fireBallObj, 5f);
+    }
+    #endregion
+
+    #region 辅助方法：BOSS翻转（保留原始体型）
+    private void FlipBoss(float dirX)
+    {
+        if (dirX == 0) return;
+        // 只翻转X轴，保留BOSS原始大小和Y/Z轴
+        transform.localScale = new Vector3(
+            Mathf.Sign(dirX) * Mathf.Abs(originalScale.x),
+            originalScale.y,
+            originalScale.z
+        );
+    }
+    #endregion
+
+    #region 地面检测：只有在地面才执行行为
+    private void OnCollisionEnter2D(Collision2D other)
+    {
+        if (other.gameObject.CompareTag(groundTag))
         {
-            fireBallScript.fireBallDamage = bossStats.heavyAttack;
+            isOnGround = true;
+        }
+    }
+
+    private void OnCollisionExit2D(Collision2D other)
+    {
+        if (other.gameObject.CompareTag(groundTag))
+        {
+            isOnGround = false;
         }
     }
     #endregion
 
-    #region Boss死亡逻辑
+    #region 死亡处理：掉落物品+销毁BOSS
     private void OnBossDeath()
     {
-        // 停止所有移动
-        rb.velocity = Vector2.zero;
-        // 禁用脚本（防止后续逻辑执行）
-        this.enabled = false;
-        // 隐藏Sprite（可后续加死亡动画）
-        if (sr != null) sr.enabled = false;
+        // 死亡时停止所有移动
+        if (rb != null) rb.velocity = Vector2.zero;
+        // 生成掉落物品
+        SpawnDrop();
+        // 解绑死亡事件，避免重复触发
+        bossStats.OnDeath -= OnBossDeath;
+        // 延迟销毁BOSS（留动画时间，可调整）
+        Destroy(gameObject, 1f);
+        Debug.Log($"【BOSS死亡】已被击败，触发掉落！");
+    }
 
-        Debug.Log($"【Boss01】已阵亡！");
-        // 后续可加：掉落稀有物品、解锁新区域、播放死亡音效等逻辑
+    // 掉落物品逻辑
+    private void SpawnDrop()
+    {
+        if (itemOnWorldPrefabs == null || dropItem == null) return;
+        // 按掉落率生成物品
+        if (Random.Range(0, 100) <= dropRate)
+        {
+            Vector3 dropPos = transform.position + new Vector3(dropOffset.x, dropOffset.y, 0);
+            GameObject dropObj = Instantiate(itemOnWorldPrefabs, dropPos, Quaternion.identity);
+            ItemOnWorld itemScript = dropObj.GetComponent<ItemOnWorld>();
+            if (itemScript != null) itemScript.item = dropItem;
+        }
     }
     #endregion
 }
