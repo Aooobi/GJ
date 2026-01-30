@@ -1,52 +1,58 @@
-using System.Collections;
+ï»¿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
 /// <summary>
-/// »ğÇò×Óµ¯½Å±¾  ºâÓñ
+/// ç«çƒå­å¼¹è„šæœ¬  è¡¡ç‰
 /// </summary>
 public class FireBall : MonoBehaviour
 {
-    [Header("»ğÇò»ù´¡ÅäÖÃ")]
-    [SerializeField] public float shootspeed = 8f;//»ğÇòËÙ¶È
-    [SerializeField] public float maxDistance = 10f;//×î´ó·ÉĞĞ¾àÀë
-    [SerializeField] private float fireBallDamage = 20f; //»ğÇòÄ¬ÈÏÉËº¦
-  
+    [Header("ç«çƒåŸºç¡€é…ç½®")]
+    [SerializeField] public float shootspeed = 8f;//ç«çƒé€Ÿåº¦
+    [SerializeField] public float maxDistance = 10f;//æœ€å¤§é£è¡Œè·ç¦»
+    [SerializeField] public float fireBallDamage = 20f; // ç«çƒé»˜è®¤ä¼¤å®³
+
+    [Header("ç«çƒå¤§å°")]
+    private Vector3 fireBallScale = new Vector3(10f, 10f, 1f); // å›ºå®šæ”¾å¤§2å€ï¼ˆå¯ç›´æ¥æ”¹æ•°å€¼ï¼‰
+    private float colliderRadius = 0.8f; // å›ºå®šç¢°æ’ä½“åŠå¾„ï¼ˆå’Œç¼©æ”¾åŒ¹é…ï¼‰ 
+
     private Rigidbody2D rb;
-    private Vector3 startPos;//·¢ÉäÆğÊ¼Î»ÖÃ
-    private CharacterStats playerStats; //Íæ¼ÒÊôĞÔ½Å±¾ È¡ÖØ¹¥»÷ÉËº¦
+    private Vector3 startPos;//å‘å°„èµ·å§‹ä½ç½®
+    private CharacterStats playerStats; //ç©å®¶å±æ€§è„šæœ¬ å–é‡æ”»å‡»ä¼¤å®³
+    private SpriteRenderer sr;
     private void Awake()
     {
+        // æ³¨é‡ŠåŸæœ‰ç¼©æ”¾/è´´å›¾é€»è¾‘ï¼Œä¿ç•™è·å–ç»„ä»¶å³å¯ï¼Œè´´å›¾ç”±RPGçš„CreateFireBallè®¾ç½®
+        sr = GetComponent<SpriteRenderer>();
+        // ğŸ‘‡ æ³¨é‡Šè¿™è¡Œï¼ä¸è¦å¼ºåˆ¶è®¾ç½®ç¼©æ”¾ï¼Œç”¨RPGä¼ çš„ç©å®¶ç¼©æ”¾
+        // if (sr != null) { transform.localScale = fireBallScale; }
+
         rb = GetComponent<Rigidbody2D>();
-        if(rb == null)
+        if (rb == null)
         {
             rb = gameObject.AddComponent<Rigidbody2D>();
             rb.gravityScale = 0;
-            rb.collisionDetectionMode = CollisionDetectionMode2D.Continuous; //·ÀÖ¹´©Ä£
+            rb.collisionDetectionMode = CollisionDetectionMode2D.Continuous;
         }
 
-        Collider2D col = GetComponent<Collider2D>();
-        if(col == null)
-        {
-            CircleCollider2D circleCol = gameObject.AddComponent<CircleCollider2D>();
-            circleCol.isTrigger = true;
-            circleCol.radius = 0.2f; //ÉèÖÃ°ë¾¶ 
-
-        }
+        // ğŸ‘‡ æ³¨é‡Šè¿™è¡Œï¼RPGå·²ç»åŠ äº†Collider2Dï¼Œé¿å…é‡å¤æ·»åŠ 
+        // Collider2D col = GetComponent<Collider2D>();
+        // if(col == null)
+        // {
+        //     CircleCollider2D circleCol = gameObject.AddComponent<CircleCollider2D>();
+        //     circleCol.isTrigger = true;
+        //     circleCol.radius = colliderRadius;
+        // }
 
         GameObject player = GameObject.FindWithTag("Player");
         if (player != null)
         {
             playerStats = player.GetComponent<CharacterStats>();
-            if(playerStats != null)
+            if (playerStats != null)
             {
-                fireBallDamage = playerStats.heavyAttack; //»ğÇòÉËº¦È¡×ÔÍæ¼ÒÖØ¹¥»÷ÉË
+                fireBallDamage = playerStats.heavyAttack;
             }
-
         }
-
-
-
     }
 
 
@@ -54,7 +60,7 @@ public class FireBall : MonoBehaviour
     {
         startPos = transform.position;
 
-        //³õÊ¼»¯ ¸ù¾İ×ÔÉíËõ·ÅxÖµ ÉèÖÃ·ÉĞĞ·½Ïò
+        //åˆå§‹åŒ– æ ¹æ®è‡ªèº«ç¼©æ”¾xå€¼ è®¾ç½®é£è¡Œæ–¹å‘
         InitMoveDirection();
 
 
@@ -62,12 +68,12 @@ public class FireBall : MonoBehaviour
 
     private void FixedUpdate()
     {
-        //¼ì²é×ÔÉí·ÉĞĞ¾àÀë
+        //æ£€æŸ¥è‡ªèº«é£è¡Œè·ç¦»
         CheckFlyDistance();
 
     }
 
-    //·ÉĞĞ·½Ïò
+    //é£è¡Œæ–¹å‘
     private void InitMoveDirection()
     { 
         float moveDir = transform.localScale.x < 0 ? -1 : 1;
@@ -78,7 +84,7 @@ public class FireBall : MonoBehaviour
 
 
 
-    //×Óµ¯·ÉĞĞ¾àÀë
+    //å­å¼¹é£è¡Œè·ç¦»
     private void CheckFlyDistance()
     {
         float currentDistance = Vector2.Distance(startPos, transform.position);
@@ -93,29 +99,24 @@ public class FireBall : MonoBehaviour
 
     private void OnTriggerEnter2D(Collider2D other)
     {
-        if(other.gameObject.layer == LayerMask.NameToLayer("Monster"))
+        // æ ¸å¿ƒä¿®æ”¹ï¼šç”¨Tagåˆ¤æ–­æ€ªç‰©ï¼ˆä½ åœºæ™¯ä¸­æ€ªç‰©çš„Tagæ˜¯Monsterï¼Œç›´æ¥åŒ¹é…ï¼‰
+        // ä¿ç•™ç©å®¶æ£€æµ‹ï¼ˆåç»­Bossç«çƒå¯ç”¨ï¼‰ï¼Œä¼˜å…ˆåˆ¤æ–­æ€ªç‰©
+        if (other.CompareTag("Monster") || other.gameObject.layer == LayerMask.NameToLayer("Player"))
         {
-            //»ñÈ¡¹ÖÎï½Å±¾
             CharacterStats targetStats = other.GetComponent<CharacterStats>();
-            if(targetStats != null)
+            if (targetStats != null && !targetStats.isDead)
             {
-                if(!targetStats.isDead)
-                {
-                    targetStats.TakeDamage(fireBallDamage , GameObject.FindWithTag("Player"));
-                    Debug.Log($"»ğÇò»÷ÖĞ{other.name}£¬Ôì³É{fireBallDamage}µãÉËº¦£¬Ê£ÓàÑªÁ¿£º{targetStats.currentHealth}");
-
-                }
-
+                GameObject attacker = gameObject.name.Contains("Boss") ? transform.parent?.gameObject : GameObject.FindWithTag("Player");
+                targetStats.TakeDamage(fireBallDamage, attacker);
+                Debug.Log($"ç«çƒå‡»ä¸­{other.name}ï¼Œé€ æˆ{fireBallDamage}ç‚¹ä¼¤å®³");
             }
-            Debug.Log("»ğÇò»÷ÖĞ");
-            Destroy(gameObject);
-
+            Destroy(gameObject); // å‡»ä¸­ç«‹åˆ»é”€æ¯ï¼Œä¸ä¼šç»§ç»­ç©¿è¿‡
         }
-
-
-
-        
-
+        // æ–°å¢ï¼šç¢°åˆ°åœ°é¢ä¹Ÿé”€æ¯ï¼ˆå¯é€‰ï¼Œé˜²æ­¢ç«çƒç©¿å¢™é£å¤ªè¿œï¼‰
+        else if (other.CompareTag("Ground"))
+        {
+            Destroy(gameObject);
+        }
     }
 
 }

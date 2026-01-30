@@ -78,7 +78,7 @@ SpriteRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
-  m_Sprite: {fileID: -9095717837082945937, guid: 207ee8102dd4143d288186ef0be518ee, type: 3}
+  m_Sprite: {fileID: 21300000, guid: dd6ee054965de664ab5cd923420dffa8, type: 3}
   m_Color: {r: 0.027450979, g: 1, b: 0.44117197, a: 1}
   m_FlipX: 1
   m_FlipY: 0
@@ -166,13 +166,12 @@ MonoBehaviour:
   place1: {fileID: 0}
   place2: {fileID: 0}
   moveSpeed: 2
-  monsterScale: 5
   chaseRange: 5
   chaseSpeed: 3
   chaseBuffer: 1
   attackCD: 1
   useHeavyAttack: 0
-  monsterSprite: {fileID: 21300000, guid: 1b7faac245b211d45b1c1c020197b382, type: 3}
+  groundTag: Ground
   itemOnWorldPrefabs: {fileID: 8650843853214096974, guid: 4a8ed60f2fe4c5a4e9bf17ebbbce849a, type: 3}
   dropItem: {fileID: 11400000, guid: f6a6575c115cc9e4fa75bead691ad770, type: 2}
   dropRate: 100
@@ -205,6 +204,7 @@ MonoBehaviour:
   attackSpeed: 0
   Defense: 0
   nowRareLevel: 0
+  unlockArea: 0
 --- !u!114 &8680635820544555032
 MonoBehaviour:
   m_ObjectHideFlags: 0
