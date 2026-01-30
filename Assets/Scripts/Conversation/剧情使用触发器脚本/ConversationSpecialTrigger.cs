@@ -51,7 +51,7 @@ public class ConversationSpecialTrigger : MonoBehaviour
 
     private void TeleportPlayerToViliage()
     {
-        UIFadeEffect.Instance.FadeOutAndFadeIn(4f,
+        UIFadeEffect.Instance.FadeOutAndFadeIn(1f,
             () =>
             {
                 //传送玩家
@@ -64,6 +64,8 @@ public class ConversationSpecialTrigger : MonoBehaviour
                 //恢复玩家控制
                 //隐藏触发器
                 gameObject.SetActive(false);
+                //顺便播放背景音乐
+                AudioManager.Instance.PlayBGM("花火镇BGM");
             }, false);
     }
 }

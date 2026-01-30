@@ -8,6 +8,9 @@ TagManager:
   - NPC
   - Monster
   - Bed
+  - GodStatue
+  - Altar
+  - Boss
   layers:
   - Default
   - TransparentFX
@@ -18,9 +21,9 @@ TagManager:
   - NPC
   - Player
   - Monster
-  - 
-  - 
-  - 
+  - GodStatue
+  - Boss
+  - Alter
   - 
   - 
   - 
