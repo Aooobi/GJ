@@ -98097,6 +98097,17 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 556246182}
   m_CullTransparentMesh: 1
+--- !u!114 &607808064 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 6874149891209576031, guid: 54cdc4a262564d048b57f36132a47153, type: 3}
+  m_PrefabInstance: {fileID: 294852993}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d9a17f10abb1a8b4eac77d17ebb71433, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &617849420
 GameObject:
   m_ObjectHideFlags: 0
@@ -103229,7 +103240,7 @@ Transform:
   m_GameObject: {fileID: 1228114411}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -146.53, y: 56.14, z: 0}
+  m_LocalPosition: {x: -156.7, y: 56.14, z: 0}
   m_LocalScale: {x: 22.825886, y: 14.010157, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -104522,7 +104533,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Content: {fileID: 1649296144}
   Name: {fileID: 1628107512}
-  Player: {fileID: 1401600157}
+  Player: {fileID: 607808064}
   BackgroundPanel: {fileID: 1095430269}
   TopBar: {fileID: 992397689}
   BottomBar: {fileID: 1913490126}
