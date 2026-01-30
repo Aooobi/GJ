@@ -67,6 +67,8 @@ public class SleepTrigger : MonoBehaviour
                 //Ë¯¾õÂß¼­
                 ConversationManager.instance.EndConversation();
                 Player.PlayerDoSleep();
+                UIFadeEffect.Instance.Black.rectTransform.sizeDelta = new Vector2(1920, 1080);
+                UIFadeEffect.Instance.FadeOutAndFadeIn(null, null);
                 canInteract = false;
             }
         }
