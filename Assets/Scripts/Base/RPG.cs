@@ -498,7 +498,7 @@ public class RPG : MonoBehaviour
     {
         if (!characterStats.SacrificeSparks()) return; // 献祭失败直接返回
 
-        // 新增1：交互后销毁神像，防止重复刷进度
+        // 交互后销毁神像，防止重复刷进度
         if (currentGodStatue != null)
         {
             Destroy(currentGodStatue);
@@ -506,17 +506,28 @@ public class RPG : MonoBehaviour
             isInGodStatueRange = false;
             Debug.Log("神像已销毁，无法重复交互");
         }
-
-        // 新增2：解锁层数，后台记录进度
         characterStats.unlockArea += 1;
         Debug.Log($"【层数解锁】已通关第{characterStats.unlockArea}层！");
-
-        // 原有：传送回村庄
+        // 传送回村庄
         UIFadeEffect.Instance.FadeOutAndFadeIn(
             on_black: () => { RespawnToVillage(); },
             on_complete: () => { Debug.Log("献祭成功，已传回村庄！"); },
             active_panel_on_end: false
         );
+
+        if (characterStats.unlockArea == 2) // 仅在解锁第二层时执行（第一层通关）
+        {
+            Debug.Log("【第一层通关】开始更新二层NPC对话...");
+            NPCConverTriggerManager.Instance.SetNewConversation(NPCConverTriggerManager.Instance.初, "二层-与初对话");
+            NPCConverTriggerManager.Instance.SetNewConversation(NPCConverTriggerManager.Instance.费米, "二层-与费米对话");
+            NPCConverTriggerManager.Instance.SetNewConversation(NPCConverTriggerManager.Instance.艾米, "二层-与艾米对话");
+            NPCConverTriggerManager.Instance.SetNewConversation(NPCConverTriggerManager.Instance.艾莉, "二层-与艾莉对话");
+            NPCConverTriggerManager.Instance.SetNewConversation(NPCConverTriggerManager.Instance.米特, "二层-与米特对话");
+            NPCConverTriggerManager.Instance.SetNewConversation(NPCConverTriggerManager.Instance.加里尔, "二层-与加里尔对话");
+            NPCConverTriggerManager.Instance.SetNewConversation(NPCConverTriggerManager.Instance.弗恩, "二层-与弗恩对话");
+        }
+
+       
     }
     #endregion
 
