@@ -51,7 +51,7 @@ public class ConversationSpecialTrigger : MonoBehaviour
 
     private void TeleportPlayerToViliage()
     {
-        UIFadeEffect.Instance.FadeOutAndFadeIn(4f,
+        UIFadeEffect.Instance.FadeOutAndFadeIn(1f,
             () =>
             {
                 //ดซหออๆผา

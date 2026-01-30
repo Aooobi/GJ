@@ -196,7 +196,7 @@ MonoBehaviour:
   moveSpeed: 0
   baseJumpHeight: 10
   jumpHeight: 0
-  baseLightAttack: 100
+  baseLightAttack: 4
   baseHeavyAttack: 0
   lightAttack: 0
   heavyAttack: 0
