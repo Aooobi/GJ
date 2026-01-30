@@ -65,6 +65,7 @@ public class SleepTrigger : MonoBehaviour
             if (Input.GetKeyDown(KeyCode.F))
             {
                 //Ë¯¾õÂß¼­
+                ConversationManager.instance.EndConversation();
                 Player.PlayerDoSleep();
                 canInteract = false;
             }
