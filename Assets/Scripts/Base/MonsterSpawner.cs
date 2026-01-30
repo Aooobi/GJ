@@ -6,6 +6,7 @@ public class MonsterSpawner : MonoBehaviour
 {
     [Header("怪物预制体")]
     public GameObject monsterPrefab;
+    public GameObject monsterPrefab1;
 
     [Header("每次生成数量")]
     public int spawnCount = 2;
