@@ -419,7 +419,7 @@ public class RPG : MonoBehaviour
 
     #region ³¡¾°½»»¥
     #region ¿¿½ü´²/ÉñÏñ/¼ÀÌ³ - ÐÞ¸Ä¼ì²âÂß¼­£¬ÐÂÔö¼ÀÌ³ÅÐ¶Ï
-    private void OnTriggerEnter2D(Collider2D other)
+    public void OnTriggerEnter2D(Collider2D other)
     {
         if (other.CompareTag("Bed"))
         {
@@ -471,7 +471,7 @@ public class RPG : MonoBehaviour
     }
     #endregion
 
-    private void PlayerDoSleep()
+   public  void PlayerDoSleep()
     {
         Debug.Log("¿ªÊ¼Ë¯¾õ,´¥·¢½¥Òþ½¥ÏÔ");
         UIFadeEffect.Instance.FadeOutAndFadeIn(
