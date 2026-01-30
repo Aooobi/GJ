@@ -9,6 +9,7 @@ using UnityEngine.EventSystems;
 /// </summary>
 public class ConversationSpecialTrigger : MonoBehaviour
 {
+    public GameObject BP;
     public string conveName;
 
 
@@ -18,9 +19,15 @@ public class ConversationSpecialTrigger : MonoBehaviour
 
     public Transform targetPoint;//传送目标点
 
+
+    void Awake()
+    {
+        BP.SetActive(false);
+    }
+
     void Start()
     {
-
+        
     }
     private void OnTriggerEnter2D(Collider2D collision)
     {
@@ -66,6 +73,7 @@ public class ConversationSpecialTrigger : MonoBehaviour
                 gameObject.SetActive(false);
                 //顺便播放背景音乐
                 AudioManager.Instance.PlayBGM("花火镇BGM");
+                BP.SetActive(true);
             }, false);
     }
 }

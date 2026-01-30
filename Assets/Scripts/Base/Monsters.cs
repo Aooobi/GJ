@@ -31,7 +31,7 @@ public class Monsters : MonoBehaviour
     [SerializeField] private GameObject itemOnWorldPrefabs;
     [SerializeField] private ItemBase dropItem;
     [SerializeField, Range(0, 100)] private float dropRate = 50f;
-    [SerializeField] private Vector2 dropOffset = new Vector2(0.5f, 0.5f);
+    [SerializeField] private Vector2 dropOffset = new Vector2(0.5f, 0);
 
     private CharacterStats monstersStats;
     private Rigidbody2D rb;
@@ -248,6 +248,11 @@ public class Monsters : MonoBehaviour
         {
             Vector3 pos = transform.position + new Vector3(dropOffset.x, dropOffset.y, 0);
             GameObject obj = Instantiate(itemOnWorldPrefabs, pos, Quaternion.identity);
+            SpriteRenderer sr = obj.GetComponent<SpriteRenderer>();
+            if (sr != null && dropItem.icon != null)
+            {
+                sr.sprite = dropItem.icon; // 直接赋值！
+            }
             var item = obj.GetComponent<ItemOnWorld>();
             if (item != null) item.item = dropItem;
         }
