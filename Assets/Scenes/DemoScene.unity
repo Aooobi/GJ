@@ -2372,6 +2372,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 428616271}
+  - component: {fileID: 428616272}
   m_Layer: 0
   m_Name: NPCs
   m_TagString: Untagged
@@ -2402,6 +2403,25 @@ Transform:
   - {fileID: 1687568393}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &428616272
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 428616270}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4f538a0ed34809541b875169adf9ed86, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  "\u521D": {fileID: 1879083594}
+  "\u8D39\u7C73": {fileID: 293811414}
+  "\u827E\u7C73": {fileID: 1101434154}
+  "\u827E\u8389": {fileID: 1812951633}
+  "\u7C73\u7279": {fileID: 1793906405}
+  "\u52A0\u91CC\u5C14": {fileID: 13260883}
+  "\u5F17\u6069": {fileID: 1615391345}
 --- !u!1 &428927834
 GameObject:
   m_ObjectHideFlags: 0
@@ -103377,6 +103397,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d9a17f10abb1a8b4eac77d17ebb71433, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  textPrefab: {fileID: 0}
+  mainCanvas: {fileID: 0}
+  tipYOffset: 2
   initMoveSpeed: 22
   initJumpHeight: 5
   heavyAttackCost: 1
