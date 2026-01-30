@@ -87,6 +87,8 @@ public class Monsters : MonoBehaviour
         }
 
         monstersStats.OnDeath += OnMonsterDeath;
+
+
     }
 
     private void Start()

@@ -8,13 +8,13 @@ using UnityEngine;
 public class FireBall : MonoBehaviour
 {
     [Header("火球基础配置")]
-    [SerializeField] public float shootspeed = 8f;//火球速度
+    [SerializeField] public float shootspeed = 1f;//火球速度
     [SerializeField] public float maxDistance = 10f;//最大飞行距离
     [SerializeField] public float fireBallDamage = 20f; // 火球默认伤害
 
     [Header("火球大小")]
-    private Vector3 fireBallScale = new Vector3(10f, 10f, 1f); // 固定放大2倍（可直接改数值）
-    private float colliderRadius = 0.8f; // 固定碰撞体半径（和缩放匹配） 
+    //private Vector3 fireBallScale = new Vector3(10f, 10f, 1f); // 固定放大2倍（可直接改数值）
+    //rivate float colliderRadius = 0.8f; // 固定碰撞体半径（和缩放匹配） 
 
     private Rigidbody2D rb;
     private Vector3 startPos;//发射起始位置
@@ -24,7 +24,7 @@ public class FireBall : MonoBehaviour
     {
         // 注释原有缩放/贴图逻辑，保留获取组件即可，贴图由RPG的CreateFireBall设置
         sr = GetComponent<SpriteRenderer>();
-        // 👇 注释这行！不要强制设置缩放，用RPG传的玩家缩放
+       
         // if (sr != null) { transform.localScale = fireBallScale; }
 
         rb = GetComponent<Rigidbody2D>();
@@ -33,16 +33,10 @@ public class FireBall : MonoBehaviour
             rb = gameObject.AddComponent<Rigidbody2D>();
             rb.gravityScale = 0;
             rb.collisionDetectionMode = CollisionDetectionMode2D.Continuous;
+
         }
 
-        // 👇 注释这行！RPG已经加了Collider2D，避免重复添加
-        // Collider2D col = GetComponent<Collider2D>();
-        // if(col == null)
-        // {
-        //     CircleCollider2D circleCol = gameObject.AddComponent<CircleCollider2D>();
-        //     circleCol.isTrigger = true;
-        //     circleCol.radius = colliderRadius;
-        // }
+       
 
         GameObject player = GameObject.FindWithTag("Player");
         if (player != null)

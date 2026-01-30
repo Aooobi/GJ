@@ -98,7 +98,7 @@ public class MonsterSpawner : MonoBehaviour
 
     private void LevelClearSpawnStatue()
     {
-        isLevelCleared = true;
+        isLevelCleared = false;
         Debug.Log($"【层通关】{gameObject.name} 所有怪物已清除！生成通关神像", this);
 
         if (godStatuePrefab == null)
@@ -114,6 +114,8 @@ public class MonsterSpawner : MonoBehaviour
         else
         {
             Instantiate(godStatuePrefab, statueSpawnPos.position, Quaternion.identity);
+            Debug.LogWarning("生成神像", this);
+            isLevelCleared = true;
         }
     }
 }

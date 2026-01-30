@@ -408,6 +408,10 @@ public class RPG : MonoBehaviour
         sr.sprite = fireBallSprite;
         sr.sortingOrder = 10;
 
+        CircleCollider2D circleCol = fireBallObj.AddComponent<CircleCollider2D>();
+        circleCol.isTrigger = true; // 必须设为Trigger，才能触发OnTriggerEnter2D
+        circleCol.radius = 1f; // 半径1f，适配你5倍的缩放，足够检测到怪物
+
         FireBall fireBallScript = fireBallObj.AddComponent<FireBall>();
         fireBallScript.fireBallDamage = characterStats.heavyAttack;
     }
@@ -430,6 +434,9 @@ public class RPG : MonoBehaviour
             currentGodStatue = other.gameObject;
             Debug.Log("靠近特殊神像，按F献祭花火解锁区域！");
             ShowInteractTip(other.transform);
+            // 新增：进入神像范围时，清空祭坛的标记，防止误判
+            isInAltarRange = false;
+            currentAltar = null;
         }
         // 新增：祭坛检测（Tag=Altar）
         else if (other.CompareTag("Altar"))
