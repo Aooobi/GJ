@@ -144,7 +144,7 @@ public class NPC : MonoBehaviour
         RectTransform textRect = textObj.GetComponent<RectTransform>();
         if (textRect == null)
         {
-            Debug.LogError("【NPC头顶提示】textPrefab缺少RectTransform组件！请确保是UI预设");
+            Debug.LogError("textPrefab缺少RectTransform组件！请确保是UI预设");
             Destroy(textObj);
             return;
         }
@@ -160,7 +160,7 @@ public class NPC : MonoBehaviour
         }
         else
         {
-            Debug.LogError("【NPC头顶提示】坐标转换失败，请检查Canvas和相机设置");
+            Debug.LogError("坐标转换失败，请检查Canvas和相机设置");
             Destroy(textObj);
             return;
         }
