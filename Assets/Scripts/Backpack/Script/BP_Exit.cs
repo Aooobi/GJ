@@ -11,28 +11,7 @@ public class BP_Exit : MonoBehaviour
         // 将面板初始位置设为屏幕左侧外
         // rect.anchoredPosition = new Vector2(-Screen.width, rect.anchoredPosition.y);
         rect.anchoredPosition = new Vector2(-680f,0f);
-        
-        // 确保BPEvent实例存在后再添加监听器
-        if(BPEvent.Instance != null)
-        {
-            BPEvent.Instance.OnInventoryStateChanged.AddListener(OnInventoryStateChange);
-        }
-        // 否则将在Start方法中尝试添加监听器
-    }
-
-    // Start方法中再次尝试添加监听器，以防Awake时BPEvent尚未初始化
-    private void Start()
-    {
-        if(BPEvent.Instance != null && BPEvent.Instance.OnInventoryStateChanged != null)
-        {
-            // 避免重复添加监听器
-            BPEvent.Instance.OnInventoryStateChanged.RemoveListener(OnInventoryStateChange);
-            BPEvent.Instance.OnInventoryStateChanged.AddListener(OnInventoryStateChange);
-        }
-        else
-        {
-            Debug.LogError("BPEvent.Instance is still null after Start! Make sure BPEvent exists in the scene.");
-        }
+        BPEvent.Instance.OnInventoryStateChanged.AddListener(OnInventoryStateChange);
     }
 
     // 滑入视图（从左侧滑入到指定位置）
@@ -71,10 +50,7 @@ public class BP_Exit : MonoBehaviour
     public void SlideOutToLeft()
     {
         SlideOutToPosition(new Vector2(-680f,0f));
-        if(BPEvent.Instance != null && BPEvent.Instance.OnInventoryStateChanged != null)
-        {
-            BPEvent.Instance.OnInventoryStateChanged.Invoke(false);
-        }
+        BPEvent.Instance.OnInventoryStateChanged.Invoke(false);
     }
 
     // 淡出并销毁
@@ -104,14 +80,5 @@ public class BP_Exit : MonoBehaviour
         BP_Open = newState;
         // 可选：这里可以加额外逻辑，比如背包关闭时恢复玩家移动
         // PlayerCanMove = !newState;
-    }
-    
-    // 确保在对象销毁时移除监听器，防止内存泄漏
-    private void OnDestroy()
-    {
-        if(BPEvent.Instance != null && BPEvent.Instance.OnInventoryStateChanged != null)
-        {
-            BPEvent.Instance.OnInventoryStateChanged.RemoveListener(OnInventoryStateChange);
-        }
     }
 }
