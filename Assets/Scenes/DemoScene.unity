@@ -97519,6 +97519,9 @@ GameObject:
   - component: {fileID: 445221570}
   - component: {fileID: 445221569}
   - component: {fileID: 445221568}
+  - component: {fileID: 445221574}
+  - component: {fileID: 445221573}
+  - component: {fileID: 445221575}
   m_Layer: 0
   m_Name: "\u4E1A\u706B\u4E4B\u82B1"
   m_TagString: Untagged
@@ -97676,6 +97679,82 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &445221573
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 445221567}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b21d302bc7887e147aacf9d875f42c13, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  maxHealth: 500
+  currentHealth: 0
+  maxSparks: 3
+  currentSparks: 3
+  baseMoveSpeed: 5
+  moveSpeed: 0
+  baseJumpHeight: 10
+  jumpHeight: 0
+  baseLightAttack: 0
+  baseHeavyAttack: 0
+  lightAttack: 0
+  heavyAttack: 0
+  baseAttackSpeed: 1
+  attackSpeed: 0
+  Defense: 10
+  nowRareLevel: 0
+  unlockArea: 0
+--- !u!114 &445221574
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 445221567}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a36d49079de75e440aa047bb87d56635, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  place1: {fileID: 0}
+  place2: {fileID: 0}
+  moveSpeed: 1.5
+  chaseRange: 8
+  chaseSpeed: 2.8
+  chaseBuffer: 1.5
+  attackCD: 1.5
+  useHeavyAttack: 0
+  fireBallCD: 3
+  fireBallDamage: 5
+  fireBallOffset: {x: 1, y: 0.8}
+  fireBallScale: 6
+  fireBallSprite: {fileID: 21300000, guid: 199b76b6c9b69cf4395f791be04d46c7, type: 3}
+  groundTag: Ground
+  itemOnWorldPrefabs: {fileID: 0}
+  dropItem: {fileID: 0}
+  dropRate: 80
+  dropOffset: {x: 1, y: 1}
+--- !u!114 &445221575
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 445221567}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6aea7c0cb52b31349a779053b6332e35, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  attackRange: 2
+  targetLayer:
+    serializedVersion: 2
+    m_Bits: 0
+  attackPoint: {fileID: 0}
 --- !u!1 &464688810
 GameObject:
   m_ObjectHideFlags: 0
