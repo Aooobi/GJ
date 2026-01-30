@@ -12,12 +12,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 884f397e44b919547b288d0c21afb7a9, type: 3}
   m_Name: "\u4E50\u53EF"
   m_EditorClassIdentifier: 
-  id: 
-  name: 
-  icon: {fileID: 0}
-  description: 
-  maxStack: 1
-  itemHeld: 0
+  id: Item_4
+  name: "\u4E50\u53EF"
+  icon: {fileID: 21300000, guid: bd62a39e3b15f5c4f8059a0cfb7cabb1, type: 3}
+  description: "\u4ECE\u5F02\u4E16\u754C\u800C\u6765\u7684\u6FC0\u723D\u996E\u6599\uFF0C\u4F7F\u7528\u540E\u5728\u63A5\u4E0B\u6765\u76841\u5206\u949F\u5185\u63D0\u53473\u70B9\u9632\u5FA1\u548C20%\u79FB\u52A8\u901F\u5EA6"
+  maxStack: 50
+  itemHeld: 1
   itemType: 0
   additionalData: {fileID: 0}
   functionScript: {fileID: 0}
