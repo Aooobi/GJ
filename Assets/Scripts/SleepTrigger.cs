@@ -33,6 +33,7 @@ public class SleepTrigger : MonoBehaviour
             canInteract = true;
             //触发对话
             ConversationManager.instance.LoadConversationByName(conversationName, black_or_not);
+            Player.StartPlayerMovement();
         }
     }
 
@@ -42,8 +43,6 @@ public class SleepTrigger : MonoBehaviour
         if (collision.CompareTag("Player"))
         {
             F_Interacter_Hint.gameObject.SetActive(true);
-
-            //触发对话
         }
     }
 
@@ -66,8 +65,7 @@ public class SleepTrigger : MonoBehaviour
             if (Input.GetKeyDown(KeyCode.F))
             {
                 //睡觉逻辑
-
-                
+                Player.PlayerDoSleep();
                 canInteract = false;
             }
         }
